@@ -2,7 +2,10 @@ import { Media } from '@/components/Media'
 import { OrderStatus } from '@/components/OrderStatus'
 import { Price } from '@/components/Price'
 import { Button } from '@/components/ui/button'
-import { Media as MediaType, Order, Product, Variant } from '@/payload-types'
+import { Media as MediaType, Product, Variant } from '@/payload-types'
+
+type ProductGalleryItem = NonNullable<Product['gallery']>[number]
+type VariantOptionRef = Variant['options'][number]
 import { formatDateTime } from '@/utilities/formatDateTime'
 import Link from 'next/link'
 
@@ -34,15 +37,15 @@ export const ProductItem: React.FC<Props> = ({
 
   let image = firstGalleryImage || metaImage
 
-  const isVariant = Boolean(variant) && typeof variant === 'object'
-
-  if (isVariant) {
-    const imageVariant = product.gallery?.find((item) => {
-      if (!item.variantOption) return false
+  if (variant) {
+    const imageVariant = product.gallery?.find((galleryItem: ProductGalleryItem) => {
+      if (!galleryItem.variantOption) return false
       const variantOptionID =
-        typeof item.variantOption === 'object' ? item.variantOption.id : item.variantOption
+        typeof galleryItem.variantOption === 'object'
+          ? galleryItem.variantOption.id
+          : galleryItem.variantOption
 
-      const hasMatch = variant?.options?.some((option) => {
+      const hasMatch = variant.options?.some((option: VariantOptionRef) => {
         if (typeof option === 'object') return option.id === variantOptionID
         else return option === variantOptionID
       })
@@ -75,7 +78,7 @@ export const ProductItem: React.FC<Props> = ({
           {variant && (
             <p className="text-sm font-mono text-primary/50 tracking-widest">
               {variant.options
-                ?.map((option) => {
+                ?.map((option: VariantOptionRef) => {
                   if (typeof option === 'object') return option.label
                   return null
                 })

@@ -19,7 +19,10 @@ import { CheckoutForm } from '@/components/forms/CheckoutForm'
 import { useAddresses, useCart, usePayments } from '@payloadcms/plugin-ecommerce/client/react'
 import { CheckoutAddresses } from '@/components/checkout/CheckoutAddresses'
 import { CreateAddressModal } from '@/components/addresses/CreateAddressModal'
-import { Address } from '@/payload-types'
+import { Address, Product, Variant } from '@/payload-types'
+
+type ProductGalleryItem = NonNullable<Product['gallery']>[number]
+type VariantOptionRef = Variant['options'][number]
 import { Checkbox } from '@/components/ui/checkbox'
 import { AddressItem } from '@/components/addresses/AddressItem'
 import { FormItem } from '@/components/forms/FormItem'
@@ -356,31 +359,29 @@ export const CheckoutPage: React.FC = () => {
           <h2 className="text-3xl font-medium">Your cart</h2>
           {cart?.items?.map((item, index) => {
             if (typeof item.product === 'object' && item.product) {
-              const {
-                product,
-                product: { id, meta, title, gallery },
-                quantity,
-                variant,
-              } = item
+              const cartProduct = item.product as Product
+              const { meta, title, gallery } = cartProduct
+              const { quantity, variant } = item
 
               if (!quantity) return null
 
               let image = gallery?.[0]?.image || meta?.image
-              let price = product?.priceInUSD
+              let price = cartProduct.priceInUSD
 
-              const isVariant = Boolean(variant) && typeof variant === 'object'
+              const cartVariant =
+                variant && typeof variant === 'object' ? (variant as Variant) : null
 
-              if (isVariant) {
-                price = variant?.priceInUSD
+              if (cartVariant) {
+                price = cartVariant.priceInUSD
 
-                const imageVariant = product.gallery?.find((item) => {
-                  if (!item.variantOption) return false
+                const imageVariant = cartProduct.gallery?.find((galleryItem: ProductGalleryItem) => {
+                  if (!galleryItem.variantOption) return false
                   const variantOptionID =
-                    typeof item.variantOption === 'object'
-                      ? item.variantOption.id
-                      : item.variantOption
+                    typeof galleryItem.variantOption === 'object'
+                      ? galleryItem.variantOption.id
+                      : galleryItem.variantOption
 
-                  const hasMatch = variant?.options?.some((option) => {
+                  const hasMatch = cartVariant.options?.some((option: VariantOptionRef) => {
                     if (typeof option === 'object') return option.id === variantOptionID
                     else return option === variantOptionID
                   })
@@ -405,10 +406,10 @@ export const CheckoutPage: React.FC = () => {
                   <div className="flex grow justify-between items-center">
                     <div className="flex flex-col gap-1">
                       <p className="font-medium text-lg">{title}</p>
-                      {variant && typeof variant === 'object' && (
+                      {cartVariant && (
                         <p className="text-sm font-mono text-primary/50 tracking-widest">
-                          {variant.options
-                            ?.map((option) => {
+                          {cartVariant.options
+                            ?.map((option: VariantOptionRef) => {
                               if (typeof option === 'object') return option.label
                               return null
                             })

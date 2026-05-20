@@ -20,7 +20,10 @@ import { DeleteItemButton } from './DeleteItemButton'
 import { EditItemQuantityButton } from './EditItemQuantityButton'
 import { OpenCartButton } from './OpenCart'
 import { Button } from '@/components/ui/button'
-import { Product } from '@/payload-types'
+import { Product, Variant } from '@/payload-types'
+
+type ProductGalleryItem = NonNullable<Product['gallery']>[number]
+type VariantOptionRef = Variant['options'][number]
 
 export function CartModal() {
   const { cart } = useCart()
@@ -67,32 +70,35 @@ export function CartModal() {
                   if (typeof product !== 'object' || !item || !product || !product.slug)
                     return <React.Fragment key={i} />
 
+                  const cartProduct = product as Product
+
                   const metaImage =
-                    product.meta?.image && typeof product.meta?.image === 'object'
-                      ? product.meta.image
+                    cartProduct.meta?.image && typeof cartProduct.meta?.image === 'object'
+                      ? cartProduct.meta.image
                       : undefined
 
                   const firstGalleryImage =
-                    typeof product.gallery?.[0]?.image === 'object'
-                      ? product.gallery?.[0]?.image
+                    typeof cartProduct.gallery?.[0]?.image === 'object'
+                      ? cartProduct.gallery?.[0]?.image
                       : undefined
 
                   let image = firstGalleryImage || metaImage
-                  let price = product.priceInUSD
+                  let price = cartProduct.priceInUSD
 
-                  const isVariant = Boolean(variant) && typeof variant === 'object'
+                  const cartVariant =
+                    variant && typeof variant === 'object' ? (variant as Variant) : null
 
-                  if (isVariant) {
-                    price = variant?.priceInUSD
+                  if (cartVariant) {
+                    price = cartVariant.priceInUSD
 
-                    const imageVariant = product.gallery?.find((item) => {
-                      if (!item.variantOption) return false
+                    const imageVariant = cartProduct.gallery?.find((galleryItem: ProductGalleryItem) => {
+                      if (!galleryItem.variantOption) return false
                       const variantOptionID =
-                        typeof item.variantOption === 'object'
-                          ? item.variantOption.id
-                          : item.variantOption
+                        typeof galleryItem.variantOption === 'object'
+                          ? galleryItem.variantOption.id
+                          : galleryItem.variantOption
 
-                      const hasMatch = variant?.options?.some((option) => {
+                      const hasMatch = cartVariant.options?.some((option: VariantOptionRef) => {
                         if (typeof option === 'object') return option.id === variantOptionID
                         else return option === variantOptionID
                       })
@@ -113,12 +119,12 @@ export function CartModal() {
                         </div>
                         <Link
                           className="z-30 flex flex-row space-x-4"
-                          href={`/products/${(item.product as Product)?.slug}`}
+                          href={`/products/${cartProduct.slug}`}
                         >
                           <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                             {image?.url && (
                               <Image
-                                alt={image?.alt || product?.title || ''}
+                                alt={image?.alt || cartProduct.title || ''}
                                 className="h-full w-full object-cover"
                                 height={94}
                                 src={image.url}
@@ -128,11 +134,11 @@ export function CartModal() {
                           </div>
 
                           <div className="flex flex-1 flex-col text-base">
-                            <span className="leading-tight">{product?.title}</span>
-                            {isVariant && variant ? (
+                            <span className="leading-tight">{cartProduct.title}</span>
+                            {cartVariant ? (
                               <p className="text-sm text-neutral-500 dark:text-neutral-400 capitalize">
-                                {variant.options
-                                  ?.map((option) => {
+                                {cartVariant.options
+                                  ?.map((option: VariantOptionRef) => {
                                     if (typeof option === 'object') return option.label
                                     return null
                                   })
