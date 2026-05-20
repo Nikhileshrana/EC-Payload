@@ -41,6 +41,7 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
+    // Used when BLOB_READ_WRITE_TOKEN is unset; disabled automatically by vercelBlobStorage when token is set
     staticDir: path.resolve(dirname, '../../public/media'),
   },
 }
