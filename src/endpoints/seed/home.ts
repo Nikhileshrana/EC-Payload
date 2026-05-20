@@ -1,4 +1,4 @@
-import type { Category, Media } from '@/payload-types'
+import type { Media } from '@/payload-types'
 import { RequiredDataFromCollectionSlug } from 'payload'
 
 type ProductArgs = {
@@ -46,7 +46,7 @@ export const homePageData: (args: ProductArgs) => RequiredDataFromCollectionSlug
                   format: 0,
                   mode: 'normal',
                   style: '',
-                  text: 'Payload Ecommerce Template',
+                  text: 'Ecommerce',
                   version: 1,
                 },
               ],
@@ -612,7 +612,7 @@ export const homePageData: (args: ProductArgs) => RequiredDataFromCollectionSlug
       description: 'An open-source ecommerce site built with Payload and Next.js.',
       // @ts-ignore
       image: metaImage,
-      title: 'Payload Ecommerce Template',
+      title: 'Ecommerce',
     },
     title: 'Home',
   }
