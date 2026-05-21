@@ -3,14 +3,12 @@ import { CMSLink } from '@/components/Link'
 import { Cart } from '@/components/Cart'
 import { OpenCartButton } from '@/components/Cart/OpenCart'
 import Link from 'next/link'
-import React, { Suspense } from 'react'
-
 import { MobileMenu } from './MobileMenu'
 import type { Header } from 'src/payload-types'
-
-import { LogoIcon } from '@/components/icons/logo'
+import { Logo } from '@/components/Logo/Logo'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/utilities/cn'
+import { Suspense } from 'react'
 
 type Props = {
   header: Header
@@ -31,7 +29,7 @@ export function HeaderClient({ header }: Props) {
         <div className="flex w-full items-end justify-between">
           <div className="flex w-full items-end gap-6 md:w-1/3">
             <Link className="flex w-full items-center justify-center pt-4 pb-4 md:w-auto" href="/">
-              <LogoIcon className="w-6 h-auto" />
+              <Logo className="h-8 w-auto object-contain" />
             </Link>
             {menu.length ? (
               <ul className="hidden gap-4 text-sm md:flex md:items-center">

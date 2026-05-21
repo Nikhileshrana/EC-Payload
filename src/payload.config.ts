@@ -31,6 +31,10 @@ export default buildConfig({
     // Default admin UI to light (avoids following OS dark mode when theme is unset)
     theme: 'light',
     components: {
+      graphics: {
+        Icon: '@/components/Logo/Logo#Logo',
+        Logo: '@/components/Logo/Logo#Logo',
+      },
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
       beforeLogin: ['@/components/BeforeLogin#BeforeLogin'],

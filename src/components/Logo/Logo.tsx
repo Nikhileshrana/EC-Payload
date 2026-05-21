@@ -1,12 +1,18 @@
 import React from 'react'
 
-export const Logo = () => {
+type Props = {
+  alt?: string
+  className?: string
+}
+
+/** Brand logo from /public/logo.png — storefront (className) and Payload admin (inline styles) */
+export const Logo: React.FC<Props> = ({ alt = 'Logo', className }) => {
   return (
-    /* eslint-disable @next/next/no-img-element */
+    // eslint-disable-next-line @next/next/no-img-element
     <img
-      alt="Payload Logo"
-      className="max-w-37.5 invert dark:invert-0"
-      src="https://raw.githubusercontent.com/payloadcms/payload/3.x/packages/payload/src/admin/assets/images/payload-logo-light.svg"
+      alt={alt}
+      className={className}
+      src="/logo.png"
     />
   )
 }

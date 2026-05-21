@@ -2,11 +2,12 @@
 
 import type { PayloadAdminBarProps } from '@payloadcms/admin-bar'
 
-import { cn } from '@/utilities/cn'
-import { useSelectedLayoutSegments } from 'next/navigation'
-import { PayloadAdminBar } from '@payloadcms/admin-bar'
-import React, { useState } from 'react'
+import { Logo } from '@/components/Logo/Logo'
 import { User } from '@/payload-types'
+import { cn } from '@/utilities/cn'
+import { PayloadAdminBar } from '@payloadcms/admin-bar'
+import { useSelectedLayoutSegments } from 'next/navigation'
+import React, { useState } from 'react'
 
 const collectionLabels = {
   pages: {
@@ -22,8 +23,6 @@ const collectionLabels = {
     singular: 'Project',
   },
 }
-
-const Title: React.FC = () => <span>Dashboard</span>
 
 export const AdminBar: React.FC<{
   adminBarProps?: PayloadAdminBarProps
@@ -66,7 +65,7 @@ export const AdminBar: React.FC<{
             // @ts-ignore - todo fix, not sure why this is erroring
             singular: collectionLabels[collection]?.singular || 'Page',
           }}
-          logo={<Title />}
+          logo={<Logo alt="Dashboard" className="max-h-6" />}
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore - todo fix, not sure why this is erroring
           onAuthChange={onAuthChange}
