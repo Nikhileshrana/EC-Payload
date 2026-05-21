@@ -22,10 +22,11 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const setTheme = useCallback((themeToSet: Theme | null) => {
     if (themeToSet === null) {
+      // "Auto" follows system preference; otherwise fall back to defaultTheme (light)
       window.localStorage.removeItem(themeLocalStorageKey)
-      const implicitPreference = getImplicitPreference()
-      document.documentElement.setAttribute('data-theme', implicitPreference || '')
-      if (implicitPreference) setThemeState(implicitPreference)
+      const implicitPreference = getImplicitPreference() ?? defaultTheme
+      document.documentElement.setAttribute('data-theme', implicitPreference)
+      setThemeState(implicitPreference)
     } else {
       setThemeState(themeToSet)
       window.localStorage.setItem(themeLocalStorageKey, themeToSet)
@@ -39,12 +40,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (themeIsValid(preference)) {
       themeToSet = preference
-    } else {
-      const implicitPreference = getImplicitPreference()
-
-      if (implicitPreference) {
-        themeToSet = implicitPreference
-      }
     }
 
     document.documentElement.setAttribute('data-theme', themeToSet)
