@@ -366,13 +366,13 @@ export const CheckoutPage: React.FC = () => {
               if (!quantity) return null
 
               let image = gallery?.[0]?.image || meta?.image
-              let price = cartProduct.priceInUSD
+              let price = cartProduct.priceInINR
 
               const cartVariant =
                 variant && typeof variant === 'object' ? (variant as Variant) : null
 
               if (cartVariant) {
-                price = cartVariant.priceInUSD
+                price = cartVariant.priceInINR
 
                 const imageVariant = cartProduct.gallery?.find((galleryItem: ProductGalleryItem) => {
                   if (!galleryItem.variantOption) return false

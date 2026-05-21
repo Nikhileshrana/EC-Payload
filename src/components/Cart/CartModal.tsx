@@ -84,13 +84,13 @@ export function CartModal() {
                       : undefined
 
                   let image = firstGalleryImage || metaImage
-                  let price = cartProduct.priceInUSD
+                  let price = cartProduct.priceInINR
 
                   const cartVariant =
                     variant && typeof variant === 'object' ? (variant as Variant) : null
 
                   if (cartVariant) {
-                    price = cartVariant.priceInUSD
+                    price = cartVariant.priceInINR
 
                     const imageVariant = cartProduct.gallery?.find((galleryItem: ProductGalleryItem) => {
                       if (!galleryItem.variantOption) return false

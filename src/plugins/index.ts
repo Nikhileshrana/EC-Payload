@@ -14,6 +14,7 @@ import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess'
 import { isAdmin } from '@/access/isAdmin'
 import { isDocumentOwner } from '@/access/isDocumentOwner'
 import { ProductsCollection } from '@/collections/Products'
+import { currenciesConfig } from '@/lib/currencies'
 import { Page, Product } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 
@@ -86,6 +87,7 @@ export const plugins: Plugin[] = [
     },
   }),
   ecommercePlugin({
+    currencies: currenciesConfig,
     access: {
       adminOnlyFieldAccess,
       adminOrPublishedStatus,
