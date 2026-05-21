@@ -4,6 +4,7 @@ import { cn } from '@/utilities/cn'
 import React, { useEffect, useRef } from 'react'
 
 import type { Props as MediaProps } from '../types'
+import { getMediaURL } from '@/utilities/getMediaURL'
 
 export const Video: React.FC<MediaProps> = (props) => {
   const { onClick, resource, videoClassName } = props
@@ -24,12 +25,7 @@ export const Video: React.FC<MediaProps> = (props) => {
   if (resource && typeof resource === 'object') {
     const { url } = resource
 
-    const src =
-      url && (url.startsWith('http://') || url.startsWith('https://'))
-        ? url
-        : url
-          ? `${process.env.NEXT_PUBLIC_SERVER_URL}${url}`
-          : null
+    const src = url ? getMediaURL(url) : null
 
     if (!src) return null
 

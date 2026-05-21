@@ -9,6 +9,7 @@ import React from 'react'
 import type { Props as MediaProps } from '../types'
 
 import { cssVariables } from '@/cssVariables'
+import { getMediaURL } from '@/utilities/getMediaURL'
 
 const { breakpoints } = cssVariables
 
@@ -47,10 +48,7 @@ export const Image: React.FC<MediaProps> = (props) => {
     height = heightFromProps ?? fullHeight
     alt = altFromResource
 
-    src =
-      url && (url.startsWith('http://') || url.startsWith('https://'))
-        ? url
-        : `${process.env.NEXT_PUBLIC_SERVER_URL}${url}`
+    src = getMediaURL(url)
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes

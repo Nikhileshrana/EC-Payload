@@ -21,6 +21,7 @@ import { EditItemQuantityButton } from './EditItemQuantityButton'
 import { OpenCartButton } from './OpenCart'
 import { Button } from '@/components/ui/button'
 import { Product, Variant } from '@/payload-types'
+import { getMediaURL } from '@/utilities/getMediaURL'
 
 type ProductGalleryItem = NonNullable<Product['gallery']>[number]
 type VariantOptionRef = Variant['options'][number]
@@ -127,7 +128,7 @@ export function CartModal() {
                                 alt={image?.alt || cartProduct.title || ''}
                                 className="h-full w-full object-cover"
                                 height={94}
-                                src={image.url}
+                                src={getMediaURL(image.url)}
                                 width={94}
                               />
                             )}
