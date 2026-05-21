@@ -41,7 +41,7 @@ const colorVariantOptions = [
   { label: 'White', value: 'white' },
 ]
 
-const globals: GlobalSlug[] = ['header', 'footer']
+const globals: GlobalSlug[] = ['header', 'footer', 'home']
 
 const baseAddressUSData: Transaction['billingAddress'] = {
   title: 'Dr.',
@@ -88,8 +88,8 @@ export const seed = async ({
   payload.logger.info(`— Clearing collections and globals...`)
 
   // clear the database
-  await Promise.all(
-    globals.map((global) =>
+  await Promise.all([
+    ...(['header', 'footer'] as const).map((global) =>
       payload.updateGlobal({
         slug: global,
         data: {
@@ -101,7 +101,22 @@ export const seed = async ({
         },
       }),
     ),
-  )
+    payload.updateGlobal({
+      slug: 'home',
+      data: {
+        hero: {
+          heading: '',
+          description: '',
+          links: [],
+        },
+        sections: [],
+      },
+      depth: 0,
+      context: {
+        disableRevalidate: true,
+      },
+    }),
+  ])
 
   for (const collection of collections) {
     await payload.db.deleteMany({ collection, req, where: {} })
@@ -567,6 +582,41 @@ export const seed = async ({
               newTab: true,
               url: 'https://payloadcms.com/',
             },
+          },
+        ],
+      },
+    }),
+    payload.updateGlobal({
+      slug: 'home',
+      data: {
+        hero: {
+          heading: 'Ut enim ad minima',
+          description:
+            'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.',
+          links: [
+            {
+              link: {
+                type: 'custom',
+                label: 'Explore now',
+                url: '/shop',
+                appearance: 'default',
+              },
+            },
+          ],
+        },
+        sections: [
+          {
+            blockType: 'productShowcase',
+            title: 'Own Products',
+            description:
+              'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.',
+            seeAll: {
+              type: 'custom',
+              label: 'see all',
+              url: '/shop',
+            },
+            products: [productHat.id, productTshirt.id],
+            reviewsLabel: '1347 Reviews',
           },
         ],
       },
