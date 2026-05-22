@@ -1,11 +1,11 @@
 import type { Footer } from '@/payload-types'
 
 import { FooterMenu } from '@/components/Footer/menu'
+import { Logo } from '@/components/Logo/Logo'
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
-import React, { Suspense } from 'react'
-import { Logo } from '@/components/Logo/Logo'
+import { Suspense } from 'react'
 
 const { COMPANY_NAME, SITE_NAME } = process.env
 

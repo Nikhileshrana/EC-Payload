@@ -85,8 +85,6 @@ export const AboutUsBlock: React.FC<
             <BentoCell className="aspect-video" media={leftBottom} />
             <BentoCell className="aspect-video" media={rightBottom} />
           </div>
-
-     
         </div>
       </div>
     </section>
