@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { AboutUs } from '@/blocks/AboutUs/config'
 import { Banner } from '@/blocks/Banner/config'
 import { Carousel } from '@/blocks/Carousel/config'
 import { ThreeItemGrid } from '@/blocks/ThreeItemGrid/config'
@@ -88,6 +89,7 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               blocks: [
+                AboutUs,
                 CallToAction,
                 Content,
                 MediaBlock,

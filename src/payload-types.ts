@@ -479,6 +479,7 @@ export interface Page {
     media?: (string | null) | Media;
   };
   layout: (
+    | AboutUsBlock
     | CallToActionBlock
     | ContentBlock
     | MediaBlock
@@ -504,6 +505,37 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutUsBlock".
+ */
+export interface AboutUsBlock {
+  /**
+   * Small label shown above the heading (e.g. "About").
+   */
+  label?: string | null;
+  /**
+   * Main heading for the section.
+   */
+  heading: string;
+  /**
+   * Supporting text below the heading.
+   */
+  subheading: string;
+  /**
+   * Upload 5 images: 2 left, 1 tall center, 2 right. Each field matches its position in the grid.
+   */
+  images: {
+    leftTop: string | Media;
+    leftBottom: string | Media;
+    center: string | Media;
+    rightTop: string | Media;
+    rightBottom: string | Media;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'aboutUs';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1220,6 +1252,7 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
+        aboutUs?: T | AboutUsBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
@@ -1241,6 +1274,26 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutUsBlock_select".
+ */
+export interface AboutUsBlockSelect<T extends boolean = true> {
+  label?: T;
+  heading?: T;
+  subheading?: T;
+  images?:
+    | T
+    | {
+        leftTop?: T;
+        leftBottom?: T;
+        center?: T;
+        rightTop?: T;
+        rightBottom?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
