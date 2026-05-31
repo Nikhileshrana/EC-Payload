@@ -1,12 +1,9 @@
 import type { Home } from '@/payload-types'
 import { ProductShowcaseBlock } from '@/blocks/ProductShowcase/Component'
+import { PromoBannerBlock } from '@/blocks/PromoBanner/Component'
 import React, { Fragment } from 'react'
 
 type Section = NonNullable<Home['sections']>[number]
-
-const blockComponents = {
-  productShowcase: ProductShowcaseBlock,
-} satisfies Record<string, React.FC<Section>>
 
 export const RenderHomeSections: React.FC<{
   sections: Home['sections']
@@ -22,17 +19,24 @@ export const RenderHomeSections: React.FC<{
           return null
         }
 
-        const Block = blockComponents[block.blockType as keyof typeof blockComponents]
+        const key = block.id ?? index
 
-        if (!Block) {
-          return null
+        switch (block.blockType) {
+          case 'productShowcase':
+            return (
+              <div key={key}>
+                <ProductShowcaseBlock {...block} />
+              </div>
+            )
+          case 'promoBanner':
+            return (
+              <div key={key}>
+                <PromoBannerBlock {...block} />
+              </div>
+            )
+          default:
+            return null
         }
-
-        return (
-          <div key={block.id ?? index}>
-            <Block {...block} />
-          </div>
-        )
       })}
     </Fragment>
   )

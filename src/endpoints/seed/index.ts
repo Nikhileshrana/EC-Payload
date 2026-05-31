@@ -105,9 +105,8 @@ export const seed = async ({
       slug: 'home',
       data: {
         hero: {
-          heading: '',
-          description: '',
-          links: [],
+          slideInterval: 5,
+          slides: [],
         },
         sections: [],
       },
@@ -590,33 +589,89 @@ export const seed = async ({
       slug: 'home',
       data: {
         hero: {
-          heading: 'Ut enim ad minima',
-          description:
-            'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.',
-          links: [
+          slideInterval: 6,
+          slides: [
             {
-              link: {
-                type: 'custom',
-                label: 'Explore now',
-                url: '/shop',
-                appearance: 'default',
-              },
+              media: imageHero.id,
+              heading: 'Handcrafted Linen',
+              textAlign: 'right',
+              links: [
+                {
+                  link: {
+                    type: 'custom',
+                    label: 'Shop now',
+                    url: '/shop',
+                    appearance: 'default',
+                  },
+                },
+              ],
+            },
+            {
+              media: imageTshirtBlack.id,
+              heading: 'Essential Tees',
+              textAlign: 'center',
+              links: [
+                {
+                  link: {
+                    type: 'custom',
+                    label: 'Shop now',
+                    url: '/shop',
+                    appearance: 'default',
+                  },
+                },
+              ],
+            },
+            {
+              media: imageHat.id,
+              heading: 'Cult Hats',
+              textAlign: 'left',
+              links: [
+                {
+                  link: {
+                    type: 'custom',
+                    label: 'Shop now',
+                    url: '/shop',
+                    appearance: 'default',
+                  },
+                },
+              ],
             },
           ],
         },
         sections: [
           {
+            blockType: 'promoBanner',
+            displayMode: 'singleSplit',
+            layout: 'overlay',
+            slides: [
+              {
+                media: imageTshirtBlack.id,
+                heading: 'Dresses',
+                subheading: 'Handblock printed cotton',
+                textAlign: 'left',
+                links: [
+                  {
+                    link: {
+                      type: 'custom',
+                      label: 'Shop now',
+                      url: '/shop',
+                      appearance: 'default',
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          {
             blockType: 'productShowcase',
-            title: 'Own Products',
-            description:
-              'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.',
+            title: 'Shop Best Sellers',
+            productSource: 'individual',
             seeAll: {
               type: 'custom',
-              label: 'see all',
+              label: 'View more',
               url: '/shop',
             },
             products: [productHat.id, productTshirt.id],
-            reviewsLabel: '1347 Reviews',
           },
         ],
       },

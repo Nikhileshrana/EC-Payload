@@ -26,8 +26,9 @@ const blockComponents = {
 
 export const RenderBlocks: React.FC<{
   blocks: Page['layout'][0][]
+  blockWrapperClassName?: string
 }> = (props) => {
-  const { blocks } = props
+  const { blocks, blockWrapperClassName = 'my-16' } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
@@ -43,7 +44,7 @@ export const RenderBlocks: React.FC<{
             if (Block) {
               return (
                 <div
-                  className={blockType === 'aboutUs' ? undefined : 'my-16'}
+                  className={blockType === 'aboutUs' ? undefined : blockWrapperClassName}
                   key={index}
                 >
                   {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}

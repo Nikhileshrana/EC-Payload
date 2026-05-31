@@ -14,42 +14,72 @@ export const ProductShowcase: Block = {
       name: 'title',
       type: 'text',
       required: true,
-      defaultValue: 'Own Products',
-      label: 'Title',
-    },
-    {
-      name: 'description',
-      type: 'textarea',
-      label: 'Description',
+      defaultValue: 'Shop Best Sellers',
+      label: 'Section title',
     },
     link({
       appearances: false,
       overrides: {
         name: 'seeAll',
-        label: 'See all link',
+        label: 'View more link',
       },
     }),
+    {
+      name: 'productSource',
+      type: 'select',
+      label: 'Product source',
+      defaultValue: 'individual',
+      required: true,
+      options: [
+        { label: 'Individual products', value: 'individual' },
+        { label: 'Category', value: 'category' },
+      ],
+    },
     {
       name: 'products',
       type: 'relationship',
       relationTo: 'products',
       hasMany: true,
-      required: true,
-      minRows: 1,
-      maxRows: 3,
       label: 'Products',
       admin: {
-        description: 'Select up to 3 products to feature in this section.',
+        condition: (_, siblingData) => siblingData?.productSource === 'individual',
+        description: 'Search and select products to feature in this section.',
         isSortable: true,
+      },
+      validate: (value: unknown, { siblingData }: { siblingData: Record<string, unknown> }) => {
+        if (siblingData?.productSource === 'individual' && (!Array.isArray(value) || !value.length)) {
+          return 'Select at least one product.'
+        }
+        return true
       },
     },
     {
-      name: 'reviewsLabel',
-      type: 'text',
-      defaultValue: '1347 Reviews',
-      label: 'Reviews label',
+      name: 'category',
+      type: 'relationship',
+      relationTo: 'categories',
+      label: 'Category',
       admin: {
-        description: 'Displayed under each product name until per-product reviews are added.',
+        condition: (_, siblingData) => siblingData?.productSource === 'category',
+        description: 'Products from this category will appear in the carousel.',
+      },
+      validate: (value: unknown, { siblingData }: { siblingData: Record<string, unknown> }) => {
+        if (siblingData?.productSource === 'category' && !value) {
+          return 'Select a category.'
+        }
+        return true
+      },
+    },
+    {
+      name: 'productLimit',
+      type: 'number',
+      label: 'Maximum products',
+      defaultValue: 8,
+      min: 1,
+      max: 24,
+      admin: {
+        condition: (_, siblingData) => siblingData?.productSource === 'category',
+        description: 'How many products to load from the selected category.',
+        step: 1,
       },
     },
   ],

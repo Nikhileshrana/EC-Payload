@@ -62,6 +62,8 @@ export const productHatData: (args: ProductArgs) => RequiredDataFromCollectionSl
     slug: 'hat',
     priceInINREnabled: true,
     priceInINR: 2500,
+    rating: '5',
+    reviewCount: 12,
     relatedProducts: relatedProducts,
   }
 }

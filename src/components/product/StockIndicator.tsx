@@ -1,34 +1,15 @@
 'use client'
-import { Product, Variant } from '@/payload-types'
-import { useSearchParams } from 'next/navigation'
+import type { Product } from '@/payload-types'
 import { useMemo } from 'react'
+
+import { useSelectedVariant } from './useSelectedVariant'
 
 type Props = {
   product: Product
 }
 
 export const StockIndicator: React.FC<Props> = ({ product }) => {
-  const searchParams = useSearchParams()
-
-  const variants = product.variants?.docs || []
-
-  const selectedVariant = useMemo<Variant | undefined>(() => {
-    if (product.enableVariants && variants.length) {
-      const variantId = searchParams.get('variant')
-      const validVariant = variants.find((variant) => {
-        if (typeof variant === 'object') {
-          return String(variant.id) === variantId
-        }
-        return String(variant) === variantId
-      })
-
-      if (validVariant && typeof validVariant === 'object') {
-        return validVariant
-      }
-    }
-
-    return undefined
-  }, [product.enableVariants, searchParams, variants])
+  const selectedVariant = useSelectedVariant(product)
 
   const stockQuantity = useMemo(() => {
     if (product.enableVariants) {
@@ -40,13 +21,18 @@ export const StockIndicator: React.FC<Props> = ({ product }) => {
   }, [product.enableVariants, selectedVariant, product.inventory])
 
   if (product.enableVariants && !selectedVariant) {
-    return null
+    return (
+      <p className="text-sm text-muted-foreground">Please select your options to check availability.</p>
+    )
   }
 
-  return (
-    <div className="uppercase font-mono text-sm font-medium text-gray-500">
-      {stockQuantity < 10 && stockQuantity > 0 && <p>Only {stockQuantity} left in stock</p>}
-      {(stockQuantity === 0 || !stockQuantity) && <p>Out of stock</p>}
-    </div>
-  )
+  if (stockQuantity === 0 || !stockQuantity) {
+    return <p className="text-sm font-medium text-destructive">Out of stock</p>
+  }
+
+  if (stockQuantity < 10) {
+    return <p className="text-sm text-muted-foreground">Only {stockQuantity} left in stock.</p>
+  }
+
+  return <p className="text-sm text-muted-foreground">In stock and ready to ship.</p>
 }

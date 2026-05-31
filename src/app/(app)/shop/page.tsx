@@ -1,8 +1,17 @@
+import { ProductShowcaseCard } from '@/blocks/ProductShowcase/ProductShowcaseCard'
 import { Grid } from '@/components/Grid'
-import { ProductGridItem } from '@/components/ProductGridItem'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
+
+const productPopulate = {
+  variants: {
+    title: true,
+    priceInINR: true,
+    inventory: true,
+    options: true,
+  },
+} as const
 
 export const metadata = {
   description: 'Search for products in the store.',
@@ -21,57 +30,47 @@ export default async function ShopPage({ searchParams }: Props) {
 
   const products = await payload.find({
     collection: 'products',
-    depth: 1,
+    depth: 2,
     draft: false,
     overrideAccess: false,
-    select: {
-      title: true,
-      slug: true,
-      gallery: true,
-      categories: true,
-      priceInINR: true,
-    },
+    populate: productPopulate,
     ...(sort ? { sort } : { sort: 'title' }),
-    ...(searchValue || category
-      ? {
-          where: {
-            and: [
+    where: {
+      and: [
+        {
+          _status: {
+            equals: 'published',
+          },
+        },
+        ...(searchValue
+          ? [
               {
-                _status: {
-                  equals: 'published',
+                or: [
+                  {
+                    title: {
+                      like: searchValue,
+                    },
+                  },
+                  {
+                    description: {
+                      like: searchValue,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
+        ...(category
+          ? [
+              {
+                categories: {
+                  contains: category,
                 },
               },
-              ...(searchValue
-                ? [
-                    {
-                      or: [
-                        {
-                          title: {
-                            like: searchValue,
-                          },
-                        },
-                        {
-                          description: {
-                            like: searchValue,
-                          },
-                        },
-                      ],
-                    },
-                  ]
-                : []),
-              ...(category
-                ? [
-                    {
-                      categories: {
-                        contains: category,
-                      },
-                    },
-                  ]
-                : []),
-            ],
-          },
-        }
-      : {}),
+            ]
+          : []),
+      ],
+    },
   })
 
   const resultsText = products.docs.length > 1 ? 'results' : 'result'
@@ -92,10 +91,10 @@ export default async function ShopPage({ searchParams }: Props) {
       )}
 
       {products?.docs.length > 0 ? (
-        <Grid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.docs.map((product) => {
-            return <ProductGridItem key={product.id} product={product} />
-          })}
+        <Grid className="grid-cols-2 gap-x-4 gap-y-10 md:gap-x-6 lg:grid-cols-3 2xl:grid-cols-4">
+          {products.docs.map((product) => (
+            <ProductShowcaseCard key={product.id} product={product} />
+          ))}
         </Grid>
       ) : null}
     </div>

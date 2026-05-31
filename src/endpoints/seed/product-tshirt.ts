@@ -1171,6 +1171,8 @@ export const productTshirtData: (
     slug: 'tshirt',
     priceInINREnabled: true,
     priceInINR: 4999,
+    rating: '5',
+    reviewCount: 24,
     relatedProducts: relatedProducts,
   }
 }

@@ -1,14 +1,18 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import type { Product } from '@/payload-types'
 
 import { createUrl } from '@/utilities/createUrl'
-import clsx from 'clsx'
+import { cn } from '@/utilities/cn'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 
-export function VariantSelector({ product }: { product: Product }) {
+type Props = {
+  product: Product
+  variantTypeName?: string
+}
+
+export function VariantSelector({ product, variantTypeName }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -20,103 +24,106 @@ export function VariantSelector({ product }: { product: Product }) {
     return null
   }
 
-  return variantTypes?.map((type) => {
+  const typesToRender = variantTypeName
+    ? variantTypes?.filter((type) => type && typeof type === 'object' && type.name === variantTypeName)
+    : variantTypes?.filter((type) => type && typeof type === 'object' && type.name !== 'size')
+
+  return typesToRender?.map((type) => {
     if (!type || typeof type !== 'object') {
-      return <></>
+      return null
     }
 
     const options = type.options?.docs
+    const isSize = type.name === 'size'
 
     if (!options || !Array.isArray(options) || !options.length) {
-      return <></>
+      return null
     }
 
+    const selectedOptionId = searchParams.get(type.name)
+    const selectedOption = options.find(
+      (option) => option && typeof option === 'object' && String(option.id) === selectedOptionId,
+    )
+    const selectedLabel =
+      selectedOption && typeof selectedOption === 'object' ? selectedOption.label : null
+
     return (
-      <dl className="" key={type.id}>
-        <dt className="mb-4 text-sm">{type.label}</dt>
-        <dd className="flex flex-wrap gap-3">
-          <React.Fragment>
-            {options?.map((option) => {
-              if (!option || typeof option !== 'object') {
-                return <></>
-              }
+      <div className="flex flex-col gap-3" key={type.id}>
+        <p className="text-sm text-foreground">
+          {type.label}
+          {selectedLabel ? `: ${selectedLabel}` : null}
+        </p>
 
-              const optionID = option.id
-              const optionKeyLowerCase = type.name
+        <div className={cn(isSize ? 'grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6' : 'flex flex-wrap gap-2')}>
+          {options.map((option) => {
+            if (!option || typeof option !== 'object') {
+              return null
+            }
 
-              // Base option params on current params so we can preserve any other param state in the url.
-              const optionSearchParams = new URLSearchParams(searchParams.toString())
+            const optionID = option.id
+            const optionKeyLowerCase = type.name
+            const optionSearchParams = new URLSearchParams(searchParams.toString())
 
-              // Remove image and variant ID from this search params so we can loop over it safely.
-              optionSearchParams.delete('variant')
-              optionSearchParams.delete('image')
+            optionSearchParams.delete('variant')
+            optionSearchParams.delete('image')
+            optionSearchParams.set(optionKeyLowerCase, String(optionID))
 
-              // Update the option params using the current option to reflect how the url *would* change,
-              // if the option was clicked.
-              optionSearchParams.set(optionKeyLowerCase, String(optionID))
+            const currentOptions = Array.from(optionSearchParams.values())
+            let isAvailableForSale = true
 
-              const currentOptions = Array.from(optionSearchParams.values())
+            if (variants) {
+              const matchingVariant = variants
+                .filter((variant) => typeof variant === 'object')
+                .find((variant) => {
+                  if (!variant.options || !Array.isArray(variant.options)) return false
 
-              let isAvailableForSale = true
+                  return variant.options.every((variantOption) => {
+                    if (typeof variantOption !== 'object') {
+                      return currentOptions.includes(String(variantOption))
+                    }
 
-              // Find a matching variant
-              if (variants) {
-                const matchingVariant = variants
-                  .filter((variant) => typeof variant === 'object')
-                  .find((variant) => {
-                    if (!variant.options || !Array.isArray(variant.options)) return false
-
-                    // Check if all variant options match the current options in the URL
-                    return variant.options.every((variantOption) => {
-                      if (typeof variantOption !== 'object')
-                        return currentOptions.includes(String(variantOption))
-
-                      return currentOptions.includes(String(variantOption.id))
-                    })
+                    return currentOptions.includes(String(variantOption.id))
                   })
+                })
 
-                if (matchingVariant) {
-                  // If we found a matching variant, set the variant ID in the search params.
-                  optionSearchParams.set('variant', String(matchingVariant.id))
-
-                  if (matchingVariant.inventory && matchingVariant.inventory > 0) {
-                    isAvailableForSale = true
-                  } else {
-                    isAvailableForSale = false
-                  }
-                }
+              if (matchingVariant) {
+                optionSearchParams.set('variant', String(matchingVariant.id))
+                isAvailableForSale = Boolean(matchingVariant.inventory && matchingVariant.inventory > 0)
               }
+            }
 
-              const optionUrl = createUrl(pathname, optionSearchParams)
+            const optionUrl = createUrl(pathname, optionSearchParams)
+            const isActive =
+              Boolean(isAvailableForSale) && searchParams.get(optionKeyLowerCase) === String(optionID)
 
-              // The option is active if it's in the url params.
-              const isActive =
-                Boolean(isAvailableForSale) &&
-                searchParams.get(optionKeyLowerCase) === String(optionID)
-
-              return (
-                <Button
-                  variant={'ghost'}
-                  aria-disabled={!isAvailableForSale}
-                  className={clsx('px-2', {
-                    'bg-primary/5 text-primary': isActive,
-                  })}
-                  disabled={!isAvailableForSale}
-                  key={option.id}
-                  onClick={() => {
-                    router.replace(`${optionUrl}`, {
-                      scroll: false,
-                    })
-                  }}
-                  title={`${option.label} ${!isAvailableForSale ? ' (Out of Stock)' : ''}`}
-                >
-                  {option.label}
-                </Button>
-              )
-            })}
-          </React.Fragment>
-        </dd>
-      </dl>
+            return (
+              <button
+                key={option.id}
+                type="button"
+                aria-disabled={!isAvailableForSale}
+                aria-pressed={isActive}
+                disabled={!isAvailableForSale}
+                title={`${option.label}${!isAvailableForSale ? ' (Out of Stock)' : ''}`}
+                className={cn(
+                  'min-h-10 border px-2 py-2 text-xs font-medium uppercase tracking-wide transition',
+                  isSize ? 'text-center' : 'px-4',
+                  isActive
+                    ? 'border-foreground bg-white text-foreground'
+                    : 'border-neutral-200 bg-white text-foreground hover:border-neutral-400',
+                  !isAvailableForSale && 'cursor-not-allowed opacity-40',
+                )}
+                onClick={() => {
+                  router.replace(`${optionUrl}`, {
+                    scroll: false,
+                  })
+                }}
+              >
+                {option.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
     )
   })
 }

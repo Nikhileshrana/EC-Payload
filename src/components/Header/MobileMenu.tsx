@@ -5,18 +5,18 @@ import type { Header } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { Button } from '@/components/ui/button'
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
 } from '@/components/ui/sheet'
 import { useAuth } from '@/providers/Auth'
 import { MenuIcon } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface Props {
   menu: Header['navItems']
@@ -47,8 +47,16 @@ export function MobileMenu({ menu }: Props) {
 
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
-      <SheetTrigger className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:bg-black dark:text-white">
-        <MenuIcon className="h-4" />
+      <SheetTrigger asChild>
+        <Button
+          type="button"
+          variant="nav"
+          size="clear"
+          aria-label="Open menu"
+          className="navLink relative items-end hover:cursor-pointer focus-visible:ring-0 focus-visible:ring-offset-0"
+        >
+          <MenuIcon className="size-4" />
+        </Button>
       </SheetTrigger>
 
       <SheetContent side="left" className="px-4">

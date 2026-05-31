@@ -291,6 +291,8 @@ export interface Product {
       }[]
     | null;
   layout?: (CallToActionBlock | ContentBlock | MediaBlock)[] | null;
+  rating?: ('1' | '2' | '3' | '4' | '5') | null;
+  reviewCount?: number | null;
   inventory?: number | null;
   enableVariants?: boolean | null;
   variantTypes?: (string | VariantType)[] | null;
@@ -1674,6 +1676,8 @@ export interface ProductsSelect<T extends boolean = true> {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
       };
+  rating?: T;
+  reviewCount?: T;
   inventory?: T;
   enableVariants?: T;
   variantTypes?: T;
@@ -1895,31 +1899,41 @@ export interface Footer {
  */
 export interface Home {
   id: string;
-  hero: {
-    media: string | Media;
-    heading: string;
-    description?: string | null;
-    links?:
+  hero?: {
+    /**
+     * How long each slide stays visible before advancing.
+     */
+    slideInterval?: number | null;
+    slides?:
       | {
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?: {
-              relationTo: 'pages';
-              value: string | Page;
-            } | null;
-            url?: string | null;
-            label: string;
-            /**
-             * Choose how the link should be rendered.
-             */
-            appearance?: ('default' | 'outline') | null;
-          };
+          media: string | Media;
+          heading: string;
+          description?: string | null;
+          textAlign: 'left' | 'right' | 'top' | 'bottom' | 'center';
+          links?:
+            | {
+                link: {
+                  type?: ('reference' | 'custom') | null;
+                  newTab?: boolean | null;
+                  reference?: {
+                    relationTo: 'pages';
+                    value: string | Page;
+                  } | null;
+                  url?: string | null;
+                  label: string;
+                  /**
+                   * Choose how the link should be rendered.
+                   */
+                  appearance?: ('default' | 'outline') | null;
+                };
+                id?: string | null;
+              }[]
+            | null;
           id?: string | null;
         }[]
       | null;
   };
-  sections?: ProductShowcaseBlock[] | null;
+  sections?: (ProductShowcaseBlock | PromoBannerBlock)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1929,7 +1943,6 @@ export interface Home {
  */
 export interface ProductShowcaseBlock {
   title: string;
-  description?: string | null;
   seeAll: {
     type?: ('reference' | 'custom') | null;
     newTab?: boolean | null;
@@ -1940,17 +1953,71 @@ export interface ProductShowcaseBlock {
     url?: string | null;
     label: string;
   };
+  productSource: 'individual' | 'category';
   /**
-   * Select up to 3 products to feature in this section.
+   * Search and select products to feature in this section.
    */
-  products: (string | Product)[];
+  products?: (string | Product)[] | null;
   /**
-   * Displayed under each product name until per-product reviews are added.
+   * Products from this category will appear in the carousel.
    */
-  reviewsLabel?: string | null;
+  category?: (string | null) | Category;
+  /**
+   * How many products to load from the selected category.
+   */
+  productLimit?: number | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'productShowcase';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PromoBannerBlock".
+ */
+export interface PromoBannerBlock {
+  displayMode: 'singleSplit' | 'singleImage' | 'carousel';
+  /**
+   * Overlay places text on top of the image. Split uses text and image side by side.
+   */
+  layout?: ('overlay' | 'split') | null;
+  /**
+   * How long each slide stays visible before advancing.
+   */
+  slideInterval?: number | null;
+  /**
+   * For single banner types, only the first slide is shown.
+   */
+  slides?:
+    | {
+        media: string | Media;
+        heading: string;
+        subheading?: string | null;
+        textAlign: 'left' | 'right' | 'center' | 'top' | 'bottom';
+        links?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+                /**
+                 * Choose how the link should be rendered.
+                 */
+                appearance?: ('default' | 'outline') | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'promoBanner';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2006,9 +2073,79 @@ export interface HomeSelect<T extends boolean = true> {
   hero?:
     | T
     | {
+        slideInterval?: T;
+        slides?:
+          | T
+          | {
+              media?: T;
+              heading?: T;
+              description?: T;
+              textAlign?: T;
+              links?:
+                | T
+                | {
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          newTab?: T;
+                          reference?: T;
+                          url?: T;
+                          label?: T;
+                          appearance?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  sections?:
+    | T
+    | {
+        productShowcase?: T | ProductShowcaseBlockSelect<T>;
+        promoBanner?: T | PromoBannerBlockSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductShowcaseBlock_select".
+ */
+export interface ProductShowcaseBlockSelect<T extends boolean = true> {
+  title?: T;
+  seeAll?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  productSource?: T;
+  products?: T;
+  category?: T;
+  productLimit?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PromoBannerBlock_select".
+ */
+export interface PromoBannerBlockSelect<T extends boolean = true> {
+  displayMode?: T;
+  layout?: T;
+  slideInterval?: T;
+  slides?:
+    | T
+    | {
         media?: T;
         heading?: T;
-        description?: T;
+        subheading?: T;
+        textAlign?: T;
         links?:
           | T
           | {
@@ -2024,34 +2161,8 @@ export interface HomeSelect<T extends boolean = true> {
                   };
               id?: T;
             };
+        id?: T;
       };
-  sections?:
-    | T
-    | {
-        productShowcase?: T | ProductShowcaseBlockSelect<T>;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProductShowcaseBlock_select".
- */
-export interface ProductShowcaseBlockSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  seeAll?:
-    | T
-    | {
-        type?: T;
-        newTab?: T;
-        reference?: T;
-        url?: T;
-        label?: T;
-      };
-  products?: T;
-  reviewsLabel?: T;
   id?: T;
   blockName?: T;
 }
