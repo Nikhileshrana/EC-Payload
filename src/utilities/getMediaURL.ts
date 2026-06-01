@@ -1,3 +1,5 @@
+import type { Media } from '@/payload-types'
+
 import { getServerSideURL } from './getURL'
 
 /**
@@ -19,4 +21,20 @@ export const getMediaURL = (url?: string | null, options?: { absolute?: boolean 
   }
 
   return path
+}
+
+export function getMediaUrl(media?: string | Media | null): string | undefined {
+  if (media && typeof media === 'object' && media.url) {
+    return media.url
+  }
+
+  return undefined
+}
+
+export function getMediaMimeType(media?: string | Media | null): string | undefined {
+  if (media && typeof media === 'object' && media.mimeType) {
+    return media.mimeType
+  }
+
+  return undefined
 }

@@ -132,11 +132,13 @@ export interface Config {
     header: Header;
     footer: Footer;
     home: Home;
+    settings: Setting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     home: HomeSelect<false> | HomeSelect<true>;
+    settings: SettingsSelect<false> | SettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -2020,6 +2022,58 @@ export interface PromoBannerBlock {
   blockType: 'promoBanner';
 }
 /**
+ * Storefront branding, logo, favicon, and color theme.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings".
+ */
+export interface Setting {
+  id: string;
+  /**
+   * Used in the site header and Payload admin panel.
+   */
+  logo?: (string | null) | Media;
+  /**
+   * Browser tab icon for the storefront. Square PNG, SVG, or ICO works best.
+   */
+  favicon?: (string | null) | Media;
+  source: 'preset' | 'custom';
+  /**
+   * Choose a curated palette for the storefront.
+   */
+  preset?: ('navy' | 'blue' | 'orange' | 'pink' | 'green' | 'purple' | 'rose') | null;
+  /**
+   * Buttons, links, and key brand accents.
+   */
+  customPrimary?: string | null;
+  /**
+   * Text on primary backgrounds. Leave blank to auto-pick.
+   */
+  customPrimaryForeground?: string | null;
+  /**
+   * Secondary surfaces and subtle fills.
+   */
+  customSecondary?: string | null;
+  /**
+   * Text on secondary backgrounds. Leave blank to auto-pick.
+   */
+  customSecondaryForeground?: string | null;
+  /**
+   * Hover states, highlights, and accents.
+   */
+  customAccent?: string | null;
+  /**
+   * Text on accent backgrounds. Leave blank to auto-pick.
+   */
+  customAccentForeground?: string | null;
+  /**
+   * Optional focus ring color. Defaults to primary.
+   */
+  customRing?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
@@ -2165,6 +2219,26 @@ export interface PromoBannerBlockSelect<T extends boolean = true> {
       };
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings_select".
+ */
+export interface SettingsSelect<T extends boolean = true> {
+  logo?: T;
+  favicon?: T;
+  source?: T;
+  preset?: T;
+  customPrimary?: T;
+  customPrimaryForeground?: T;
+  customSecondary?: T;
+  customSecondaryForeground?: T;
+  customAccent?: T;
+  customAccentForeground?: T;
+  customRing?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

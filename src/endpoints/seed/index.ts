@@ -586,6 +586,13 @@ export const seed = async ({
       },
     }),
     payload.updateGlobal({
+      slug: 'settings',
+      data: {
+        source: 'preset',
+        preset: 'navy',
+      },
+    }),
+    payload.updateGlobal({
       slug: 'home',
       data: {
         hero: {

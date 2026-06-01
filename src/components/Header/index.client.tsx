@@ -14,9 +14,10 @@ import { MobileMenu } from './MobileMenu'
 
 type Props = {
   header: Header
+  logoUrl?: string
 }
 
-export function HeaderClient({ header }: Props) {
+export function HeaderClient({ header, logoUrl }: Props) {
   const menu = header.navItems || []
   const pathname = usePathname()
   const router = useRouter()
@@ -64,7 +65,7 @@ export function HeaderClient({ header }: Props) {
     <div className="relative z-20 border-b">
       <nav className="flex items-end justify-between container pt-2">
         <Link className="flex shrink-0 items-center py-4" href="/">
-          <Logo className="h-8 w-auto object-contain" />
+          <Logo className="h-8 w-auto object-contain" src={logoUrl} />
         </Link>
 
         {menu.length ? (

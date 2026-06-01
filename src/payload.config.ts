@@ -19,6 +19,7 @@ import { Categories } from '@/collections/Categories'
 import { Media } from '@/collections/Media'
 import { Pages } from '@/collections/Pages'
 import { Users } from '@/collections/Users'
+import { Settings } from '@/globals/Settings'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
 import { Home } from '@/globals/Home'
@@ -33,8 +34,8 @@ export default buildConfig({
     theme: 'light',
     components: {
       graphics: {
-        Icon: '@/components/Logo/Logo#Logo',
-        Logo: '@/components/Logo/Logo#Logo',
+        Icon: '@/components/Logo/SettingsAdminLogo#SettingsAdminLogo',
+        Logo: '@/components/Logo/SettingsAdminLogo#SettingsAdminLogo',
       },
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
@@ -86,7 +87,7 @@ export default buildConfig({
   }),
   //email: nodemailerAdapter(),
   endpoints: [],
-  globals: [Header, Footer, Home],
+  globals: [Header, Footer, Home, Settings],
   plugins,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
