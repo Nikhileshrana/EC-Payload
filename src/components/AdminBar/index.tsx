@@ -26,8 +26,9 @@ const collectionLabels = {
 
 export const AdminBar: React.FC<{
   adminBarProps?: PayloadAdminBarProps
+  logoUrl?: string
 }> = (props) => {
-  const { adminBarProps } = props || {}
+  const { adminBarProps, logoUrl } = props || {}
   const segments = useSelectedLayoutSegments()
   const [show, setShow] = useState(false)
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -65,7 +66,7 @@ export const AdminBar: React.FC<{
             // @ts-ignore - todo fix, not sure why this is erroring
             singular: collectionLabels[collection]?.singular || 'Page',
           }}
-          logo={<Logo alt="Dashboard" className="max-h-6" />}
+          logo={<Logo alt="Dashboard" className="max-h-6" src={logoUrl} />}
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore - todo fix, not sure why this is erroring
           onAuthChange={onAuthChange}

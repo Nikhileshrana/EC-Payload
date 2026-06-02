@@ -7,8 +7,12 @@ type Props = {
 }
 
 export const Logo: React.FC<Props> = ({ alt = 'Logo', className, src }) => {
+  if (!src) {
+    return null
+  }
+
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} className={className} src={src || '/logo.png'} />
+    <img alt={alt} className={className} src={src} />
   )
 }

@@ -17,7 +17,6 @@ const nextConfig: NextConfig = {
   },
   images: {
     localPatterns: [
-      // Anything served from /public (e.g. /logo.png, /images/hero.jpg) and local API routes
       {
         pathname: '/**',
       },
