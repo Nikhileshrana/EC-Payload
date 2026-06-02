@@ -1,5 +1,5 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
-import { getMediaUrl } from '@/utilities/getMediaURL'
+import { getMediaURL, getMediaUrl } from '@/utilities/getMediaURL'
 
 import './index.css'
 import { HeaderClient } from './index.client'
@@ -10,5 +10,7 @@ export async function Header() {
     getCachedGlobal('settings', 1)(),
   ])
 
-  return <HeaderClient header={header} logoUrl={getMediaUrl(settings?.logo)} />
+  const logoUrl = getMediaURL(getMediaUrl(settings?.logo))
+
+  return <HeaderClient header={header} logoUrl={logoUrl || undefined} />
 }

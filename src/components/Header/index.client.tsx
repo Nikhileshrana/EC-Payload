@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState } from 'react'
 import type { Header } from 'src/payload-types'
+import { AccountLink } from './AccountLink'
 import { MobileMenu } from './MobileMenu'
 
 type Props = {
@@ -89,10 +90,13 @@ export function HeaderClient({ header, logoUrl }: Props) {
         ) : null}
 
         <div className="flex shrink-0 items-end gap-4">
-          <div className="order-1 md:order-2">
+          <div className="order-3 md:order-4">
             <Suspense fallback={<OpenCartButton />}>
               <Cart />
             </Suspense>
+          </div>
+          <div className="order-2">
+            <AccountLink />
           </div>
           <Button
             type="button"
@@ -101,7 +105,7 @@ export function HeaderClient({ header, logoUrl }: Props) {
             aria-expanded={searchOpen}
             aria-label={searchOpen ? 'Close search' : 'Open search'}
             className={cn(
-              'navLink relative order-2 items-end hover:cursor-pointer focus-visible:ring-0 focus-visible:ring-offset-0 md:order-1',
+              'navLink relative order-1 items-end hover:cursor-pointer focus-visible:ring-0 focus-visible:ring-offset-0',
               {
                 active: searchOpen || pathname.startsWith('/shop'),
               },
@@ -110,14 +114,13 @@ export function HeaderClient({ header, logoUrl }: Props) {
           >
             <SearchIcon className="size-4" />
           </Button>
-          <div className="order-3 md:hidden">
+          <div className="order-4 md:hidden">
             <Suspense fallback={null}>
               <MobileMenu menu={menu} />
             </Suspense>
           </div>
         </div>
       </nav>
-
       <div
         className={cn(
           'overflow-hidden transition-[max-height,opacity] duration-300 ease-out',
