@@ -179,6 +179,14 @@ export function buildAdminColorThemeCss(theme?: Setting | null): string {
 
   return `${buildSiteColorThemeCss(theme)}
 @layer payload {
+  .step-nav__home {
+    width: auto;
+    height: auto;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
   html:not([data-theme='dark']) {${buildAdminThemeOverrides(light)}}
   html[data-theme='dark'] {${buildAdminThemeOverrides(dark)}}
 }`

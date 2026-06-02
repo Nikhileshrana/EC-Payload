@@ -8,16 +8,16 @@ type Props = {
   className?: string
 }
 
-/**
- * Payload admin graphics (Icon + Logo).
- * Logo URL comes from Globals → Settings → Branding only.
- */
 export function SettingsAdminLogo({ className }: Props) {
-  const [logoSrc, setLogoSrc] = useState<string | null>(null)
   const pathname = usePathname()
   const isLoginPage = Boolean(pathname?.includes('/login'))
+  const [logoSrc, setLogoSrc] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!isLoginPage) {
+      return
+    }
+
     let cancelled = false
 
     fetch('/api/globals/settings?depth=1')
@@ -36,7 +36,11 @@ export function SettingsAdminLogo({ className }: Props) {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [isLoginPage])
+
+  if (!isLoginPage) {
+    return <span className={className}>Home</span>
+  }
 
   if (!logoSrc) {
     return null
@@ -48,26 +52,15 @@ export function SettingsAdminLogo({ className }: Props) {
       alt="Logo"
       className={className}
       src={logoSrc}
-      style={
-        isLoginPage
-          ? {
-              maxHeight: 200,
-              height: 'auto',
-              width: 'auto',
-              maxWidth: 'min(100%, 320px)',
-              objectFit: 'contain',
-              display: 'block',
-              marginInline: 'auto',
-            }
-          : {
-              maxHeight: 32,
-              height: 'auto',
-              width: 'auto',
-              maxWidth: 140,
-              objectFit: 'contain',
-              display: 'block',
-            }
-      }
+      style={{
+        maxHeight: 200,
+        height: 'auto',
+        width: 'auto',
+        maxWidth: 'min(100%, 320px)',
+        objectFit: 'contain',
+        display: 'block',
+        marginInline: 'auto',
+      }}
     />
   )
 }
