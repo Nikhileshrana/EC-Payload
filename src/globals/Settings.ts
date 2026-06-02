@@ -24,6 +24,7 @@ export const Settings: GlobalConfig = {
 
         revalidateTag('global_settings', 'max')
         revalidatePath('/', 'layout')
+        revalidatePath('/admin', 'layout')
 
         return doc
       },

@@ -108,10 +108,8 @@ export function resolveSiteColorTheme(theme?: Setting | null): {
   }
 }
 
-export function buildSiteColorThemeCss(theme?: Setting | null): string {
-  const { light, dark } = resolveSiteColorTheme(theme)
-
-  const toVars = (set: ThemeColorSet) => `
+function themeColorVars(set: ThemeColorSet): string {
+  return `
   --primary: ${set.primary};
   --primary-foreground: ${set.primaryForeground};
   --secondary: ${set.secondary};
@@ -119,10 +117,70 @@ export function buildSiteColorThemeCss(theme?: Setting | null): string {
   --accent: ${set.accent};
   --accent-foreground: ${set.accentForeground};
   --ring: ${set.ring ?? set.primary};`
-
-  return `:root {${toVars(light)}
 }
-[data-theme='dark'] {${toVars(dark)}
+
+export function buildSiteColorThemeCss(theme?: Setting | null): string {
+  const { light, dark } = resolveSiteColorTheme(theme)
+
+  return `:root {${themeColorVars(light)}
+}
+[data-theme='dark'] {${themeColorVars(dark)}
+}`
+}
+
+function buildAdminThemeOverrides(set: ThemeColorSet): string {
+  const hoverPrimary = mixHex(set.primary, '#000000', 0.14)
+  const disabledPrimary = mixHex(set.primary, '#ffffff', 0.55)
+  const ring = set.ring ?? set.primary
+
+  return `
+  --accessibility-outline: 2px solid ${ring};
+  --accessibility-outline-offset: 2px;
+
+  .btn.btn--style-primary {
+    --bg-color: ${set.primary};
+    --color: ${set.primaryForeground};
+    --hover-bg: ${hoverPrimary};
+    --hover-color: ${set.primaryForeground};
+  }
+
+  .btn.btn--style-primary.btn--disabled {
+    --color: ${mixHex(set.primaryForeground, set.primary, 0.35)};
+    --hover-bg: ${disabledPrimary};
+    --hover-color: ${mixHex(set.primaryForeground, set.primary, 0.35)};
+  }
+
+  .btn.btn--style-secondary {
+    --btn-border: 1px solid ${set.primary};
+    --hover-color: ${set.primary};
+    --hover-btn-border: 1px solid ${hoverPrimary};
+  }
+
+  .btn.btn--style-pill {
+    --bg-color: ${set.secondary};
+    --color: ${set.secondaryForeground};
+    --hover-bg: ${set.accent};
+    --hover-color: ${set.accentForeground};
+  }
+
+  .nav-group__toggle:hover,
+  .nav-group__toggle:focus-visible {
+    color: ${set.primary};
+  }
+
+  .nav-group__toggle:hover svg .stroke,
+  .nav-group__toggle:focus-visible svg .stroke {
+    stroke: ${set.primary};
+  }`
+}
+
+export function buildAdminColorThemeCss(theme?: Setting | null): string {
+  const { light, dark } = resolveSiteColorTheme(theme)
+
+  return `${buildSiteColorThemeCss(theme)}
+@layer payload {
+  html:not([data-theme='dark']) {${buildAdminThemeOverrides(light)}}
+  html[data-theme='dark'] {${buildAdminThemeOverrides(dark)}}
 }`
 }
 

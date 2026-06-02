@@ -33,6 +33,7 @@ export default buildConfig({
     // Default admin UI to light (avoids following OS dark mode when theme is unset)
     theme: 'light',
     components: {
+      providers: ['@/components/AdminSiteTheme#AdminSiteThemeProvider'],
       graphics: {
         Icon: '@/components/Logo/SettingsAdminLogo#SettingsAdminLogo',
         Logo: '@/components/Logo/SettingsAdminLogo#SettingsAdminLogo',
