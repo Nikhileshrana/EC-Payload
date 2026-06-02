@@ -10,7 +10,7 @@
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "OrderStatus".
  */
-export type OrderStatus = ('processing' | 'completed' | 'cancelled' | 'refunded') | null;
+export type OrderStatus = ('paid' | 'processing' | 'completed' | 'cancelled' | 'refunded') | null;
 /**
  * Supported timezones in IANA format.
  *
@@ -946,10 +946,10 @@ export interface Transaction {
         id?: string | null;
       }[]
     | null;
-  paymentMethod?: 'stripe' | null;
-  stripe?: {
-    customerID?: string | null;
-    paymentIntentID?: string | null;
+  paymentMethod?: 'razorpay' | null;
+  razorpay?: {
+    orderID?: string | null;
+    paymentID?: string | null;
   };
   billingAddress?: {
     title?: string | null;
@@ -1776,11 +1776,11 @@ export interface TransactionsSelect<T extends boolean = true> {
         id?: T;
       };
   paymentMethod?: T;
-  stripe?:
+  razorpay?:
     | T
     | {
-        customerID?: T;
-        paymentIntentID?: T;
+        orderID?: T;
+        paymentID?: T;
       };
   billingAddress?:
     | T

@@ -372,10 +372,9 @@ export const seed = async ({
     data: {
       currency: 'INR',
       customer: customer.id,
-      paymentMethod: 'stripe',
-      stripe: {
-        customerID: 'cus_123',
-        paymentIntentID: 'pi_123',
+      paymentMethod: 'razorpay',
+      razorpay: {
+        orderID: 'order_seed_pending',
       },
       status: 'pending',
       billingAddress: baseAddressUSData,
@@ -387,10 +386,10 @@ export const seed = async ({
     data: {
       currency: 'INR',
       customer: customer.id,
-      paymentMethod: 'stripe',
-      stripe: {
-        customerID: 'cus_123',
-        paymentIntentID: 'pi_123',
+      paymentMethod: 'razorpay',
+      razorpay: {
+        orderID: 'order_seed_succeeded',
+        paymentID: 'pay_seed_succeeded',
       },
       status: 'succeeded',
       billingAddress: baseAddressUSData,

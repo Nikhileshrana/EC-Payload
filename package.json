@@ -15,8 +15,7 @@
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation eslint . --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm -f bun.lock && bun install",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "stripe-webhooks": "stripe listen --forward-to localhost:3000/api/payments/stripe/webhooks"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
     "@payloadcms/admin-bar": "3.85.0",
@@ -37,8 +36,6 @@
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
-    "@stripe/react-stripe-js": "^3",
-    "@stripe/stripe-js": "^4.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cross-env": "^7.0.3",
@@ -60,7 +57,6 @@
     "react-hook-form": "7.71.1",
     "sharp": "0.34.2",
     "sonner": "^1.7.2",
-    "stripe": "18.5.0",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {

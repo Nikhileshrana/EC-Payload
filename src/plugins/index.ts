@@ -6,8 +6,9 @@ import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { Plugin } from 'payload'
 
-import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
+import { razorpayAdapter } from '@/payments/razorpay'
 
+import { OrdersCollection } from '@/collections/Orders'
 import { adminOnlyFieldAccess } from '@/access/adminOnlyFieldAccess'
 import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus'
 import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess'
@@ -99,39 +100,13 @@ export const plugins: Plugin[] = [
       slug: 'users',
     },
     orders: {
-      ordersCollectionOverride: ({ defaultCollection }) => ({
-        ...defaultCollection,
-        fields: [
-          ...defaultCollection.fields,
-          {
-            name: 'accessToken',
-            type: 'text',
-            unique: true,
-            index: true,
-            admin: {
-              position: 'sidebar',
-              readOnly: true,
-            },
-            hooks: {
-              beforeValidate: [
-                ({ value, operation }) => {
-                  if (operation === 'create' || !value) {
-                    return crypto.randomUUID()
-                  }
-                  return value
-                },
-              ],
-            },
-          },
-        ],
-      }),
+      ordersCollectionOverride: OrdersCollection,
     },
     payments: {
       paymentMethods: [
-        stripeAdapter({
-          secretKey: process.env.STRIPE_SECRET_KEY!,
-          publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-          webhookSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET!,
+        razorpayAdapter({
+          apiKey: process.env.RAZORPAY_API_KEY || '',
+          secretKey: process.env.RAZORPAY_SECRET_KEY || '',
         }),
       ],
     },
