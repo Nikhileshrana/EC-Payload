@@ -21,21 +21,28 @@ export const revalidateProduct: CollectionAfterChangeHook<Product> = ({
     }
   }
 
-  if (doc._status === 'published') {
+  const revalidateShopListing = () => {
+    revalidateTag('products', 'max')
+    revalidatePath('/shop')
+  }
+
+  const isPublished = doc._status === 'published'
+  const wasPublished = previousDoc?._status === 'published'
+
+  // Only revalidate when storefront-visible data changes. Skip draft auto-creation
+  // on /admin/collections/products/create — revalidateTag during render throws.
+  if (isPublished) {
     revalidateProductPaths(doc)
-  }
-
-  if (previousDoc?._status === 'published' && doc._status !== 'published') {
+    revalidateShopListing()
+  } else if (wasPublished) {
     revalidateProductPaths(previousDoc)
+    revalidateShopListing()
   }
 
-  if (previousDoc?.slug && previousDoc.slug !== doc.slug) {
+  if (previousDoc?.slug && previousDoc.slug !== doc.slug && (isPublished || wasPublished)) {
     revalidateTag(`product_${previousDoc.slug}`, 'max')
     revalidatePath(`/products/${previousDoc.slug}`)
   }
-
-  revalidateTag('products', 'max')
-  revalidatePath('/shop')
 
   return doc
 }
