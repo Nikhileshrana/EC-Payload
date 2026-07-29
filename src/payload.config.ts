@@ -1,4 +1,5 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 import {
   BoldFeature,
@@ -80,7 +81,11 @@ export default buildConfig({
       ]
     },
   }),
-  //email: nodemailerAdapter(),
+  email: resendAdapter({
+    defaultFromAddress: process.env.RESEND_FROM_EMAIL || 'noreply@gcappliances.in',
+    defaultFromName: process.env.RESEND_FROM_NAME || process.env.SITE_NAME || 'GC Appliances',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
   endpoints: [],
   globals: [Header, Footer, Home, Settings],
   plugins,

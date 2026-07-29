@@ -7,7 +7,7 @@
       "dependencies": {
         "@payloadcms/admin-bar": "3.85.0",
         "@payloadcms/db-mongodb": "3.85.0",
-        "@payloadcms/email-nodemailer": "3.85.0",
+        "@payloadcms/email-resend": "3.85.0",
         "@payloadcms/live-preview-react": "3.85.0",
         "@payloadcms/next": "3.85.0",
         "@payloadcms/plugin-ecommerce": "3.85.0",
@@ -431,7 +431,7 @@
 
     "@payloadcms/db-mongodb": ["@payloadcms/db-mongodb@3.85.0", "", { "dependencies": { "mongoose": "8.22.1", "mongoose-paginate-v2": "1.9.4", "prompts": "2.4.2", "uuid": "13.0.2" }, "peerDependencies": { "payload": "3.85.0" } }, "sha512-f3dr30QdsunxuL4Izuc8B4qwMHoJXMfYy2KdHaqnqXJ4EiIV0MklzRsn4c3jMv/lTZiaG+WRBJgoTzm75Zo9Vw=="],
 
-    "@payloadcms/email-nodemailer": ["@payloadcms/email-nodemailer@3.85.0", "", { "dependencies": { "nodemailer": "^8.0.5" }, "peerDependencies": { "payload": "3.85.0" } }, "sha512-TeWdnPQL1vIHOZRu6ll+SznuN8QkdacLLvqj8GJf+pkZjpCtiLst2kQd59q2Xen+wpYiQAoKcKi4x4Sx0b8i7A=="],
+    "@payloadcms/email-resend": ["@payloadcms/email-resend@3.85.0", "", { "peerDependencies": { "payload": "3.85.0" } }, "sha512-5UIFKJjMD+XthWWVhlGCiqVVWSXzEQE3NbkqhnfVeJNNt+JvUthfTp/EOOpb4uDa/svkYQdKamuntHcwtYn1+w=="],
 
     "@payloadcms/graphql": ["@payloadcms/graphql@3.85.0", "", { "dependencies": { "graphql-scalars": "1.22.2", "pluralize": "8.0.0", "ts-essentials": "10.0.3", "tsx": "4.21.0" }, "peerDependencies": { "graphql": "^16.8.1", "payload": "3.85.0" }, "bin": { "payload-graphql": "bin.js" } }, "sha512-QIAGSmtNS8XX5MxPZONMPX/xYANuzZ/xxAtlhFUxJvxTZVxbb1Aafx+dTIPTggJ4updzD3Rk/b76TYQc3jS13A=="],
 
@@ -1530,8 +1530,6 @@
     "node-exports-info": ["node-exports-info@1.6.0", "", { "dependencies": { "array.prototype.flatmap": "^1.3.3", "es-errors": "^1.3.0", "object.entries": "^1.1.9", "semver": "^6.3.1" } }, "sha512-pyFS63ptit/P5WqUkt+UUfe+4oevH+bFeIiPPdfb0pFeYEu/1ELnJu5l+5EcTKYL5M7zaAa7S8ddywgXypqKCw=="],
 
     "node-releases": ["node-releases@2.0.44", "", {}, "sha512-5WUyunoPMsvvEhS8AxHtRzP+oA8UCkJ7YRxatWKjngndhDGLiqEVAQKWjFAiAiuL8zMRGzGSJxFnLetoa43qGQ=="],
-
-    "nodemailer": ["nodemailer@8.0.10", "", {}, "sha512-BLFuSth7QtHOkBzyqTehWWyub0NTRDuK2Q2SQfnGLsrJnzyU+Yeh4WpV1eZGuARFj1xQJHIdnTuJZLP+b9R1GQ=="],
 
     "normalize-path": ["normalize-path@3.0.0", "", {}, "sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA=="],
 

@@ -887,7 +887,6 @@ export interface Form {
         cc?: string | null;
         bcc?: string | null;
         replyTo?: string | null;
-        emailFrom?: string | null;
         subject: string;
         /**
          * Enter the message that should be sent in this email.
@@ -1574,7 +1573,6 @@ export interface FormsSelect<T extends boolean = true> {
         cc?: T;
         bcc?: T;
         replyTo?: T;
-        emailFrom?: T;
         subject?: T;
         message?: T;
         id?: T;

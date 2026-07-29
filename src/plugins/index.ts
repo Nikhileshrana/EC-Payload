@@ -46,6 +46,17 @@ export const plugins: Plugin[] = [
     generateURL,
   }),
   formBuilderPlugin({
+    // Always use RESEND_FROM_* defaults — ignore any leftover emailFrom on forms
+    beforeEmail: (emails) => {
+      const fromName = process.env.RESEND_FROM_NAME || process.env.SITE_NAME || 'GC Appliances'
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@gcappliances.in'
+      const from = `${fromName} <${fromEmail}>`
+
+      return emails.map(({ from: _from, ...email }) => ({
+        ...email,
+        from,
+      }))
+    },
     fields: {
       payment: false,
     },
@@ -85,6 +96,25 @@ export const plugins: Plugin[] = [
               }),
             }
           }
+
+          // Hide Email From — always use RESEND_FROM_* env defaults
+          if ('name' in field && field.name === 'emails' && field.type === 'array') {
+            return {
+              ...field,
+              fields: field.fields.map((emailsField) => {
+                if (emailsField.type === 'row' && 'fields' in emailsField) {
+                  return {
+                    ...emailsField,
+                    fields: emailsField.fields.filter(
+                      (f) => !('name' in f && f.name === 'emailFrom'),
+                    ),
+                  }
+                }
+                return emailsField
+              }),
+            }
+          }
+
           return field
         })
       },
