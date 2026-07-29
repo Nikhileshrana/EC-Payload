@@ -18,6 +18,7 @@ import { ProductsCollection } from '@/collections/Products'
 import { currenciesConfig } from '@/lib/currencies'
 import { Page, Product } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+import { toKebabCase } from '@/utilities/toKebabCase'
 
 const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Ecommerce` : 'Ecommerce'
@@ -32,7 +33,9 @@ const generateURL: GenerateURL<Product | Page> = ({ doc }) => {
 export const plugins: Plugin[] = [
   vercelBlobStorage({
     collections: {
-      media: true,
+      media: {
+        prefix: toKebabCase(process.env.SITE_NAME || ''),
+      },
     },
     // Bypass Vercel's 4.5MB server upload limit (media allows up to 12MB)
     clientUploads: true,

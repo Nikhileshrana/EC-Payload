@@ -8,7 +8,7 @@ import { getMediaUrl } from '@/utilities/getMediaURL'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
-const { COMPANY_NAME, SITE_NAME } = process.env
+const { SITE_NAME } = process.env
 
 export async function Footer() {
   const [footer, settings] = await Promise.all([
@@ -21,7 +21,7 @@ export async function Footer() {
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '')
   const skeleton = 'w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700'
 
-  const copyrightName = COMPANY_NAME || SITE_NAME || ''
+  const copyrightName = SITE_NAME || ''
 
   return (
     <footer className="text-sm text-neutral-500 dark:text-neutral-400">

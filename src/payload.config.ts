@@ -19,10 +19,10 @@ import { Categories } from '@/collections/Categories'
 import { Media } from '@/collections/Media'
 import { Pages } from '@/collections/Pages'
 import { Users } from '@/collections/Users'
-import { Settings } from '@/globals/Settings'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
 import { Home } from '@/globals/Home'
+import { Settings } from '@/globals/Settings'
 import { plugins } from './plugins'
 
 const filename = fileURLToPath(import.meta.url)
