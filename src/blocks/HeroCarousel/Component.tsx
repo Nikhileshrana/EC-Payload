@@ -1,6 +1,6 @@
 'use client'
 
-import type { Home } from '@/payload-types'
+import type { HeroCarouselBlock as HeroCarouselBlockProps } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel'
@@ -8,8 +8,7 @@ import { cn } from '@/utilities/cn'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import { useEffect, useState } from 'react'
 
-type HeroProps = NonNullable<Home['hero']>
-type Slide = NonNullable<HeroProps['slides']>[number]
+type Slide = NonNullable<HeroCarouselBlockProps['slides']>[number]
 type TextAlign = NonNullable<Slide['textAlign']>
 
 const alignmentMap: Record<TextAlign, { container: string; content: string }> = {
@@ -48,12 +47,7 @@ function HeroSlide({ slide, priority }: { slide: Slide; priority?: boolean }) {
     <div className="relative h-[75dvh] w-full md:h-[90dvh]">
       <Media fill imgClassName="object-cover" priority={priority} resource={media} />
       <div aria-hidden className="absolute inset-0 bg-black/35" />
-      <div
-        className={cn(
-          'container relative z-10 flex h-full py-16 md:py-24',
-          align.container,
-        )}
-      >
+      <div className={cn('container relative z-10 flex h-full py-16 md:py-24', align.container)}>
         <div className={cn('max-w-xl text-white', align.content)}>
           {heading ? (
             <h1 className="text-4xl font-semibold uppercase leading-tight tracking-tight md:text-5xl lg:text-6xl">
@@ -64,7 +58,16 @@ function HeroSlide({ slide, priority }: { slide: Slide; priority?: boolean }) {
             <p className="mt-4 text-base leading-relaxed text-white/85 md:text-lg">{description}</p>
           ) : null}
           {cta ? (
-            <div className={cn('mt-8', textAlign === 'center' || textAlign === 'top' || textAlign === 'bottom' ? 'flex justify-center' : textAlign === 'right' ? 'flex justify-end' : 'flex justify-start')}>
+            <div
+              className={cn(
+                'mt-8',
+                textAlign === 'center' || textAlign === 'top' || textAlign === 'bottom'
+                  ? 'flex justify-center'
+                  : textAlign === 'right'
+                    ? 'flex justify-end'
+                    : 'flex justify-start',
+              )}
+            >
               <CMSLink
                 {...cta}
                 appearance={cta.appearance ?? 'default'}
@@ -79,12 +82,12 @@ function HeroSlide({ slide, priority }: { slide: Slide; priority?: boolean }) {
   )
 }
 
-export function HomeHeroSection({ hero }: { hero: HeroProps }) {
+export function HeroCarouselBlock(props: HeroCarouselBlockProps) {
   const { setHeaderTheme } = useHeaderTheme()
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
-  const slides = hero.slides ?? []
-  const slideInterval = hero.slideInterval ?? 5
+  const slides = props.slides ?? []
+  const slideInterval = props.slideInterval ?? 5
 
   useEffect(() => {
     setHeaderTheme('dark')

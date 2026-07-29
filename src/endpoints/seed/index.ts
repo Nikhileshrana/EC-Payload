@@ -41,7 +41,7 @@ const colorVariantOptions = [
   { label: 'White', value: 'white' },
 ]
 
-const globals: GlobalSlug[] = ['header', 'footer', 'home']
+const globals: GlobalSlug[] = ['header', 'footer']
 
 const baseAddressUSData: Transaction['billingAddress'] = {
   title: 'Dr.',
@@ -88,8 +88,8 @@ export const seed = async ({
   payload.logger.info(`— Clearing collections and globals...`)
 
   // clear the database
-  await Promise.all([
-    ...(['header', 'footer'] as const).map((global) =>
+  await Promise.all(
+    (['header', 'footer'] as const).map((global) =>
       payload.updateGlobal({
         slug: global,
         data: {
@@ -101,21 +101,7 @@ export const seed = async ({
         },
       }),
     ),
-    payload.updateGlobal({
-      slug: 'home',
-      data: {
-        hero: {
-          slideInterval: 5,
-          slides: [],
-        },
-        sections: [],
-      },
-      depth: 0,
-      context: {
-        disableRevalidate: true,
-      },
-    }),
-  ])
+  )
 
   for (const collection of collections) {
     await payload.db.deleteMany({ collection, req, where: {} })
@@ -334,6 +320,15 @@ export const seed = async ({
       data: homePageData({
         contentImage: imageHero,
         metaImage: imageHat,
+        carouselImages: {
+          hero: imageHero,
+          tshirt: imageTshirtBlack,
+          hat: imageHat,
+        },
+        showcaseProducts: {
+          hat: productHat,
+          tshirt: productTshirt,
+        },
       }),
     }),
     payload.create({
@@ -589,97 +584,6 @@ export const seed = async ({
       data: {
         source: 'preset',
         preset: 'navy',
-      },
-    }),
-    payload.updateGlobal({
-      slug: 'home',
-      data: {
-        hero: {
-          slideInterval: 6,
-          slides: [
-            {
-              media: imageHero.id,
-              heading: 'Handcrafted Linen',
-              textAlign: 'right',
-              links: [
-                {
-                  link: {
-                    type: 'custom',
-                    label: 'Shop now',
-                    url: '/shop',
-                    appearance: 'default',
-                  },
-                },
-              ],
-            },
-            {
-              media: imageTshirtBlack.id,
-              heading: 'Essential Tees',
-              textAlign: 'center',
-              links: [
-                {
-                  link: {
-                    type: 'custom',
-                    label: 'Shop now',
-                    url: '/shop',
-                    appearance: 'default',
-                  },
-                },
-              ],
-            },
-            {
-              media: imageHat.id,
-              heading: 'Cult Hats',
-              textAlign: 'left',
-              links: [
-                {
-                  link: {
-                    type: 'custom',
-                    label: 'Shop now',
-                    url: '/shop',
-                    appearance: 'default',
-                  },
-                },
-              ],
-            },
-          ],
-        },
-        sections: [
-          {
-            blockType: 'promoBanner',
-            displayMode: 'singleSplit',
-            layout: 'overlay',
-            slides: [
-              {
-                media: imageTshirtBlack.id,
-                heading: 'Dresses',
-                subheading: 'Handblock printed cotton',
-                textAlign: 'left',
-                links: [
-                  {
-                    link: {
-                      type: 'custom',
-                      label: 'Shop now',
-                      url: '/shop',
-                      appearance: 'default',
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            blockType: 'productShowcase',
-            title: 'Shop Best Sellers',
-            productSource: 'individual',
-            seeAll: {
-              type: 'custom',
-              label: 'View more',
-              url: '/shop',
-            },
-            products: [productHat.id, productTshirt.id],
-          },
-        ],
       },
     }),
   ])

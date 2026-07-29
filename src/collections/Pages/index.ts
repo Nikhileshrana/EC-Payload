@@ -1,8 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
-import { AboutUs } from '@/blocks/AboutUs/config'
 import { Banner } from '@/blocks/Banner/config'
 import { Carousel } from '@/blocks/Carousel/config'
+import { Gallery } from '@/blocks/Gallery/config'
+import { HeroCarousel } from '@/blocks/HeroCarousel/config'
+import { ProductShowcase } from '@/blocks/ProductShowcase/config'
+import { PromoBanner } from '@/blocks/PromoBanner/config'
 import { ThreeItemGrid } from '@/blocks/ThreeItemGrid/config'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { adminOnly } from '@/access/adminOnly'
@@ -89,7 +92,8 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               blocks: [
-                AboutUs,
+                HeroCarousel,
+                Gallery,
                 CallToAction,
                 Content,
                 MediaBlock,
@@ -98,6 +102,8 @@ export const Pages: CollectionConfig = {
                 ThreeItemGrid,
                 Banner,
                 FormBlock,
+                ProductShowcase,
+                PromoBanner,
               ],
               required: true,
             },
@@ -122,10 +128,7 @@ export const Pages: CollectionConfig = {
 
             MetaDescriptionField({}),
             PreviewField({
-              // if the `generateUrl` function is configured
               hasGenerateFn: true,
-
-              // field paths to match the target field for data
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',
             }),

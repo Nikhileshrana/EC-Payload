@@ -1,11 +1,14 @@
-import { AboutUsBlock } from '@/blocks/AboutUs/Component'
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CarouselBlock } from '@/blocks/Carousel/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
+import { GalleryBlock } from '@/blocks/Gallery/Component'
+import { HeroCarouselBlock } from '@/blocks/HeroCarousel/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { ProductShowcaseBlock } from '@/blocks/ProductShowcase/Component'
+import { PromoBannerBlock } from '@/blocks/PromoBanner/Component'
 import { ThreeItemGridBlock } from '@/blocks/ThreeItemGrid/Component'
 import { toKebabCase } from '@/utilities/toKebabCase'
 import React, { Fragment } from 'react'
@@ -13,16 +16,21 @@ import React, { Fragment } from 'react'
 import type { Page } from '../payload-types'
 
 const blockComponents = {
-  aboutUs: AboutUsBlock,
   archive: ArchiveBlock,
   banner: BannerBlock,
   carousel: CarouselBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   formBlock: FormBlock,
+  gallery: GalleryBlock,
+  heroCarousel: HeroCarouselBlock,
   mediaBlock: MediaBlock,
+  productShowcase: ProductShowcaseBlock,
+  promoBanner: PromoBannerBlock,
   threeItemGrid: ThreeItemGridBlock,
 }
+
+const fullBleedBlocks = new Set(['gallery', 'heroCarousel', 'promoBanner', 'productShowcase'])
 
 export const RenderBlocks: React.FC<{
   blocks: Page['layout'][0][]
@@ -44,7 +52,7 @@ export const RenderBlocks: React.FC<{
             if (Block) {
               return (
                 <div
-                  className={blockType === 'aboutUs' ? undefined : blockWrapperClassName}
+                  className={fullBleedBlocks.has(blockType) ? undefined : blockWrapperClassName}
                   key={index}
                 >
                   {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}

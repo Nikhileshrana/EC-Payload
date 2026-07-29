@@ -19,9 +19,13 @@ export const generatePreviewPath = ({ collection, slug }: Props) => {
 
   // Encode to support slugs with special characters
   const encodedSlug = encodeURIComponent(slug)
+  const path =
+    collection === 'pages' && slug === 'home'
+      ? '/'
+      : `${collectionPrefixMap[collection]}/${encodedSlug}`
 
   const encodedParams = new URLSearchParams({
-    path: `${collectionPrefixMap[collection]}/${encodedSlug}`,
+    path,
     previewSecret: process.env.PREVIEW_SECRET || '',
   } satisfies PreviewSearchParams)
 

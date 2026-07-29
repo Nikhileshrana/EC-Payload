@@ -22,7 +22,6 @@ import { Pages } from '@/collections/Pages'
 import { Users } from '@/collections/Users'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
-import { Home } from '@/globals/Home'
 import { Settings } from '@/globals/Settings'
 import { plugins } from './plugins'
 
@@ -87,7 +86,7 @@ export default buildConfig({
     apiKey: process.env.RESEND_API_KEY || '',
   }),
   endpoints: [],
-  globals: [Header, Footer, Home, Settings],
+  globals: [Header, Footer, Settings],
   plugins,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

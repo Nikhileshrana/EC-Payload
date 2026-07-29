@@ -6,20 +6,22 @@ import { HighImpactHero } from '@/heros/HighImpact'
 import { LowImpactHero } from '@/heros/LowImpact'
 import { MediumImpactHero } from '@/heros/MediumImpact'
 
-const heroes = {
-  highImpact: HighImpactHero,
-  lowImpact: LowImpactHero,
-  mediumImpact: MediumImpactHero,
-}
-
 export const RenderHero: React.FC<Page['hero']> = (props) => {
   const { type } = props || {}
 
   if (!type || type === 'none') return null
 
-  const HeroToRender = heroes[type]
+  if (type === 'highImpact') {
+    return <HighImpactHero {...props} />
+  }
 
-  if (!HeroToRender) return null
+  if (type === 'mediumImpact') {
+    return <MediumImpactHero {...props} />
+  }
 
-  return <HeroToRender {...props} />
+  if (type === 'lowImpact') {
+    return <LowImpactHero richText={props.richText} />
+  }
+
+  return null
 }

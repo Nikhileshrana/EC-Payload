@@ -6,11 +6,9 @@ import { generateMeta } from '@/utilities/generateMeta'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
-import { homeStaticData } from '@/endpoints/seed/home-static'
 import React from 'react'
 
-import type { Page } from '@/payload-types'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -25,15 +23,9 @@ export async function generateStaticParams() {
     },
   })
 
-  const params = pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'home'
-    })
-    .map(({ slug }) => {
-      return { slug }
-    })
-
-  return params
+  return pages.docs
+    ?.filter((doc) => doc.slug !== 'home')
+    .map(({ slug }) => ({ slug }))
 }
 
 type Args = {
@@ -44,16 +36,12 @@ type Args = {
 
 export default async function Page({ params }: Args) {
   const { slug = 'home' } = await params
-  const url = '/' + slug
 
-  let page = await queryPageBySlug({
-    slug,
-  })
-
-  // Remove this code once your website is seeded
-  if (!page && slug === 'home') {
-    page = homeStaticData() as Page
+  if (slug === 'home') {
+    redirect('/')
   }
+
+  const page = await queryPageBySlug({ slug })
 
   if (!page) {
     return notFound()
@@ -71,17 +59,12 @@ export default async function Page({ params }: Args) {
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug = 'home' } = await params
-
-  const page = await queryPageBySlug({
-    slug,
-  })
-
+  const page = await queryPageBySlug({ slug })
   return generateMeta({ doc: page })
 }
 
 const queryPageBySlug = async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
-
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({

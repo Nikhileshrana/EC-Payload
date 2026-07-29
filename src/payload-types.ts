@@ -131,13 +131,11 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
-    home: Home;
     settings: Setting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
-    home: HomeSelect<false> | HomeSelect<true>;
     settings: SettingsSelect<false> | SettingsSelect<true>;
   };
   locale: null;
@@ -484,7 +482,8 @@ export interface Page {
     media?: (string | null) | Media;
   };
   layout: (
-    | AboutUsBlock
+    | HeroCarouselBlock
+    | GalleryBlock
     | CallToActionBlock
     | ContentBlock
     | MediaBlock
@@ -493,6 +492,8 @@ export interface Page {
     | ThreeItemGridBlock
     | BannerBlock
     | FormBlock
+    | ProductShowcaseBlock
+    | PromoBannerBlock
   )[];
   meta?: {
     title?: string | null;
@@ -513,34 +514,62 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "AboutUsBlock".
+ * via the `definition` "HeroCarouselBlock".
  */
-export interface AboutUsBlock {
+export interface HeroCarouselBlock {
   /**
-   * Small label shown above the heading (e.g. "About").
+   * How long each slide stays visible before advancing.
    */
-  label?: string | null;
-  /**
-   * Main heading for the section.
-   */
-  heading: string;
-  /**
-   * Supporting text below the heading.
-   */
-  subheading: string;
-  /**
-   * Upload 5 images: 2 left, 1 tall center, 2 right. Each field matches its position in the grid.
-   */
-  images: {
-    leftTop: string | Media;
-    leftBottom: string | Media;
-    center: string | Media;
-    rightTop: string | Media;
-    rightBottom: string | Media;
-  };
+  slideInterval?: number | null;
+  slides?:
+    | {
+        media: string | Media;
+        heading: string;
+        description?: string | null;
+        textAlign: 'left' | 'right' | 'top' | 'bottom' | 'center';
+        links?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+                /**
+                 * Choose how the link should be rendered.
+                 */
+                appearance?: ('default' | 'outline') | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'aboutUs';
+  blockType: 'heroCarousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  /**
+   * Add any number of images. They arrange automatically in a masonry layout.
+   */
+  images?:
+    | {
+        image: string | Media;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gallery';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -914,6 +943,88 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductShowcaseBlock".
+ */
+export interface ProductShowcaseBlock {
+  title: string;
+  seeAll: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?: {
+      relationTo: 'pages';
+      value: string | Page;
+    } | null;
+    url?: string | null;
+    label: string;
+  };
+  productSource: 'individual' | 'category';
+  /**
+   * Search and select products to feature in this section.
+   */
+  products?: (string | Product)[] | null;
+  /**
+   * Products from this category will appear in the carousel.
+   */
+  category?: (string | null) | Category;
+  /**
+   * How many products to load from the selected category.
+   */
+  productLimit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'productShowcase';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PromoBannerBlock".
+ */
+export interface PromoBannerBlock {
+  displayMode: 'singleSplit' | 'singleImage' | 'carousel';
+  /**
+   * Overlay places text on top of the image. Split uses text and image side by side.
+   */
+  layout?: ('overlay' | 'split') | null;
+  /**
+   * How long each slide stays visible before advancing.
+   */
+  slideInterval?: number | null;
+  /**
+   * For single banner types, only the first slide is shown.
+   */
+  slides?:
+    | {
+        media: string | Media;
+        heading: string;
+        subheading?: string | null;
+        textAlign: 'left' | 'right' | 'center' | 'top' | 'bottom';
+        links?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+                /**
+                 * Choose how the link should be rendered.
+                 */
+                appearance?: ('default' | 'outline') | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'promoBanner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "variants".
  */
 export interface Variant {
@@ -1256,7 +1367,8 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
-        aboutUs?: T | AboutUsBlockSelect<T>;
+        heroCarousel?: T | HeroCarouselBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
@@ -1265,6 +1377,8 @@ export interface PagesSelect<T extends boolean = true> {
         threeItemGrid?: T | ThreeItemGridBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        productShowcase?: T | ProductShowcaseBlockSelect<T>;
+        promoBanner?: T | PromoBannerBlockSelect<T>;
       };
   meta?:
     | T
@@ -1281,20 +1395,47 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "AboutUsBlock_select".
+ * via the `definition` "HeroCarouselBlock_select".
  */
-export interface AboutUsBlockSelect<T extends boolean = true> {
-  label?: T;
-  heading?: T;
-  subheading?: T;
+export interface HeroCarouselBlockSelect<T extends boolean = true> {
+  slideInterval?: T;
+  slides?:
+    | T
+    | {
+        media?: T;
+        heading?: T;
+        description?: T;
+        textAlign?: T;
+        links?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                    appearance?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock_select".
+ */
+export interface GalleryBlockSelect<T extends boolean = true> {
   images?:
     | T
     | {
-        leftTop?: T;
-        leftBottom?: T;
-        center?: T;
-        rightTop?: T;
-        rightBottom?: T;
+        image?: T;
+        id?: T;
       };
   id?: T;
   blockName?: T;
@@ -1414,6 +1555,63 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductShowcaseBlock_select".
+ */
+export interface ProductShowcaseBlockSelect<T extends boolean = true> {
+  title?: T;
+  seeAll?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  productSource?: T;
+  products?: T;
+  category?: T;
+  productLimit?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PromoBannerBlock_select".
+ */
+export interface PromoBannerBlockSelect<T extends boolean = true> {
+  displayMode?: T;
+  layout?: T;
+  slideInterval?: T;
+  slides?:
+    | T
+    | {
+        media?: T;
+        heading?: T;
+        subheading?: T;
+        textAlign?: T;
+        links?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                    appearance?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -1896,132 +2094,6 @@ export interface Footer {
   createdAt?: string | null;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home".
- */
-export interface Home {
-  id: string;
-  hero?: {
-    /**
-     * How long each slide stays visible before advancing.
-     */
-    slideInterval?: number | null;
-    slides?:
-      | {
-          media: string | Media;
-          heading: string;
-          description?: string | null;
-          textAlign: 'left' | 'right' | 'top' | 'bottom' | 'center';
-          links?:
-            | {
-                link: {
-                  type?: ('reference' | 'custom') | null;
-                  newTab?: boolean | null;
-                  reference?: {
-                    relationTo: 'pages';
-                    value: string | Page;
-                  } | null;
-                  url?: string | null;
-                  label: string;
-                  /**
-                   * Choose how the link should be rendered.
-                   */
-                  appearance?: ('default' | 'outline') | null;
-                };
-                id?: string | null;
-              }[]
-            | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  sections?: (ProductShowcaseBlock | PromoBannerBlock)[] | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProductShowcaseBlock".
- */
-export interface ProductShowcaseBlock {
-  title: string;
-  seeAll: {
-    type?: ('reference' | 'custom') | null;
-    newTab?: boolean | null;
-    reference?: {
-      relationTo: 'pages';
-      value: string | Page;
-    } | null;
-    url?: string | null;
-    label: string;
-  };
-  productSource: 'individual' | 'category';
-  /**
-   * Search and select products to feature in this section.
-   */
-  products?: (string | Product)[] | null;
-  /**
-   * Products from this category will appear in the carousel.
-   */
-  category?: (string | null) | Category;
-  /**
-   * How many products to load from the selected category.
-   */
-  productLimit?: number | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'productShowcase';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PromoBannerBlock".
- */
-export interface PromoBannerBlock {
-  displayMode: 'singleSplit' | 'singleImage' | 'carousel';
-  /**
-   * Overlay places text on top of the image. Split uses text and image side by side.
-   */
-  layout?: ('overlay' | 'split') | null;
-  /**
-   * How long each slide stays visible before advancing.
-   */
-  slideInterval?: number | null;
-  /**
-   * For single banner types, only the first slide is shown.
-   */
-  slides?:
-    | {
-        media: string | Media;
-        heading: string;
-        subheading?: string | null;
-        textAlign: 'left' | 'right' | 'center' | 'top' | 'bottom';
-        links?:
-          | {
-              link: {
-                type?: ('reference' | 'custom') | null;
-                newTab?: boolean | null;
-                reference?: {
-                  relationTo: 'pages';
-                  value: string | Page;
-                } | null;
-                url?: string | null;
-                label: string;
-                /**
-                 * Choose how the link should be rendered.
-                 */
-                appearance?: ('default' | 'outline') | null;
-              };
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'promoBanner';
-}
-/**
  * Storefront branding, logo, favicon, and color theme.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2118,107 +2190,6 @@ export interface FooterSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home_select".
- */
-export interface HomeSelect<T extends boolean = true> {
-  hero?:
-    | T
-    | {
-        slideInterval?: T;
-        slides?:
-          | T
-          | {
-              media?: T;
-              heading?: T;
-              description?: T;
-              textAlign?: T;
-              links?:
-                | T
-                | {
-                    link?:
-                      | T
-                      | {
-                          type?: T;
-                          newTab?: T;
-                          reference?: T;
-                          url?: T;
-                          label?: T;
-                          appearance?: T;
-                        };
-                    id?: T;
-                  };
-              id?: T;
-            };
-      };
-  sections?:
-    | T
-    | {
-        productShowcase?: T | ProductShowcaseBlockSelect<T>;
-        promoBanner?: T | PromoBannerBlockSelect<T>;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProductShowcaseBlock_select".
- */
-export interface ProductShowcaseBlockSelect<T extends boolean = true> {
-  title?: T;
-  seeAll?:
-    | T
-    | {
-        type?: T;
-        newTab?: T;
-        reference?: T;
-        url?: T;
-        label?: T;
-      };
-  productSource?: T;
-  products?: T;
-  category?: T;
-  productLimit?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PromoBannerBlock_select".
- */
-export interface PromoBannerBlockSelect<T extends boolean = true> {
-  displayMode?: T;
-  layout?: T;
-  slideInterval?: T;
-  slides?:
-    | T
-    | {
-        media?: T;
-        heading?: T;
-        subheading?: T;
-        textAlign?: T;
-        links?:
-          | T
-          | {
-              link?:
-                | T
-                | {
-                    type?: T;
-                    newTab?: T;
-                    reference?: T;
-                    url?: T;
-                    label?: T;
-                    appearance?: T;
-                  };
-              id?: T;
-            };
-        id?: T;
-      };
-  id?: T;
-  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
