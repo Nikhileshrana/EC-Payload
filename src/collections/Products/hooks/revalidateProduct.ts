@@ -4,6 +4,13 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 
 import type { Product } from '@/payload-types'
 
+const revalidateStorefrontListings = () => {
+  revalidateTag('products', 'max')
+  // Shop listing + home (product showcase / category blocks)
+  revalidatePath('/shop')
+  revalidatePath('/')
+}
+
 export const revalidateProduct: CollectionAfterChangeHook<Product> = ({
   doc,
   previousDoc,
@@ -21,11 +28,6 @@ export const revalidateProduct: CollectionAfterChangeHook<Product> = ({
     }
   }
 
-  const revalidateShopListing = () => {
-    revalidateTag('products', 'max')
-    revalidatePath('/shop')
-  }
-
   const isPublished = doc._status === 'published'
   const wasPublished = previousDoc?._status === 'published'
 
@@ -33,10 +35,10 @@ export const revalidateProduct: CollectionAfterChangeHook<Product> = ({
   // on /admin/collections/products/create — revalidateTag during render throws.
   if (isPublished) {
     revalidateProductPaths(doc)
-    revalidateShopListing()
+    revalidateStorefrontListings()
   } else if (wasPublished) {
     revalidateProductPaths(previousDoc)
-    revalidateShopListing()
+    revalidateStorefrontListings()
   }
 
   if (previousDoc?.slug && previousDoc.slug !== doc.slug && (isPublished || wasPublished)) {
@@ -60,8 +62,7 @@ export const revalidateProductDelete: CollectionAfterDeleteHook<Product> = ({
     revalidatePath(`/products/${doc.slug}`)
   }
 
-  revalidateTag('products', 'max')
-  revalidatePath('/shop')
+  revalidateStorefrontListings()
 
   return doc
 }

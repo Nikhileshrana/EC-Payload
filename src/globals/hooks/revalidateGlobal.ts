@@ -10,8 +10,13 @@ export const createRevalidateGlobalHook = (
 
     revalidateTag(`global_${slug}`, 'max')
 
+    // Header/footer/settings live in the root layout — invalidate all pages
+    revalidatePath('/', 'layout')
+
     for (const path of paths) {
-      revalidatePath(path)
+      if (path !== '/') {
+        revalidatePath(path)
+      }
     }
 
     return doc
